@@ -43,3 +43,42 @@ function updatePreview(url) {
     
     <!--Page specific logic(modals, etc.)-- >
     <script src="~/js/admin/categories.js"></script>
+
+function confirmDelete(id) {
+    // Step 1: Admin Approval Message
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This action requires Admin approval. Do you want to proceed?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Step 2: Send Request to Controller
+            $.ajax({
+                type: "POST",
+                url: '/Admin/DeleteCategory', // Ensure this matches your route
+                data: { id: id },
+                success: function (data) {
+                    if (data.success) {
+                        // Step 3: Display Success Toast
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: data.message,
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+
+                        // Refresh page or remove row from table
+                        setTimeout(() => { location.reload(); }, 2000);
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                }
+            });
+        }
+    })
+}

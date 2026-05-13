@@ -267,6 +267,7 @@ body {
 .content {
     padding: 28px;
     flex: 1;
+    background: #F4F1EB;
 }
 
 .page-header {

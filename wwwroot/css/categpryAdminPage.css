@@ -340,18 +340,6 @@ tbody td {
     color: var(--olive-light);
 }
 
-/* url cell */
-.url-cell {
-    font-size: 12px;
-    color: var(--muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    flex: 1;
-    max-width: 200px;
-    display: block;
-}
-
 .copy-btn {
     flex-shrink: 0;
     background: var(--cream);
@@ -773,4 +761,141 @@ tbody td {
     margin-top: 24px;
     padding-top: 18px;
     border-top: 1px solid var(--border);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ── TOOLBAR ── */
+.toolbar {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.toolbar-search {
+    position: relative;
+    flex: 1;
+    max-width: 320px;
+}
+
+    .toolbar-search input {
+        width: 100%;
+        background: var(--cream);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 14px 8px 34px;
+        font-size: 13px;
+        font-family: 'DM Sans', sans-serif;
+        color: var(--charcoal);
+        outline: none;
+        transition: border 0.15s;
+    }
+
+        .toolbar-search input:focus {
+            border-color: var(--olive);
+        }
+
+    .toolbar-search i {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+.toolbar-divider {
+    width: 1px;
+    height: 26px;
+    background: var(--border);
+}
+
+.toolbar-sort {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .toolbar-sort label {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .toolbar-sort select {
+        background: var(--cream);
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        padding: 7px 12px;
+        font-size: 12px;
+        font-family: 'DM Sans', sans-serif;
+        color: var(--charcoal);
+        outline: none;
+        cursor: pointer;
+    }
+
+        .toolbar-sort select:focus {
+            border-color: var(--olive);
+        }
+
+.view-toggles {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+}
+
+.view-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+}
+
+    .view-btn.active {
+        background: var(--olive);
+        color: var(--white);
+        border-color: var(--olive);
+    }
+
+.count-pill {
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
 }
