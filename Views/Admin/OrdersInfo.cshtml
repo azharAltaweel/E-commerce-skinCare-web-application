@@ -1,0 +1,204 @@
+﻿@using E_commerce_Website__Skincare_.Models
+@model IEnumerable<Order>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Orders Management";
+}
+
+<div class="container-fluid p-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Orders Management</h2>
+            <p class="text-muted">View and manage all customer orders</p>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="filter-bar">
+            <span class="filter-label">Filter:</span>
+
+            <input type="text"
+                   id="searchInput"
+                   placeholder="Search by customer or order ID..."
+                   style="width:220px;" />
+
+            <select id="statusFilter">
+                <option value="">All Statuses</option>
+                <option value="Processing">Processing</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+
+            <select id="dateFilter">
+                <option value="">All Dates</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+            </select>
+
+            <button class="btn btn-secondary btn-sm ms-auto" onclick="clearFilters()">
+                <i class="fa-solid fa-xmark"></i> Clear
+            </button>
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle" id="ordersTable">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr data-status="@order.Status"
+                            data-date="@order.OrderDate.ToString("yyyy-MM-dd")"
+                            data-customer="@order.User?.FullName?.ToLower()"
+                            data-id="@order.Id">
+
+                            <td>
+                                <span class="fw-semibold text-muted">#@order.Id</span>
+                            </td>
+
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar" style="width:32px;height:32px;font-size:11px;">
+                                        @(order.User?.FullName?.Substring(0, 1).ToUpper() ?? "?")
+                                    </div>
+                                    <div>
+                                        <div class="fw-medium" style="font-size:13px;">
+                                            @order.User?.FullName
+                                        </div>
+                                        <div style="font-size:11px;color:var(--muted);">
+                                            @order.User?.Email
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td style="font-size:13px;">
+                                @order.OrderDate.ToString("MMM dd, yyyy")
+                                <div style="font-size:11px;color:var(--muted);">
+                                    @order.OrderDate.ToString("hh:mm tt")
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="badge" style="background:var(--cream-dark);color:var(--charcoal);">
+                                    @order.OrderItems?.Count() item(s)
+                                </span>
+                            </td>
+
+                            <td class="fw-semibold">
+                                $@order.TotalAmount.ToString("0.00")
+                            </td>
+
+                            <td>
+                                @{
+                                    var badgeClass = order.Status switch
+                                    {
+                                        "Completed" => "badge-shipped",
+                                        "Processing" => "badge-processing",
+                                        "Cancelled" => "badge-cancelled",
+                                        _ => "badge-pending"
+                                    };
+                                }
+                                <span class="badge @badgeClass status-label" data-order-id="@order.Id">
+                                    @order.Status
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="d-flex gap-1">
+
+                                    <!-- View Details -->
+                                    <button class="btn btn-sm btn-secondary"
+                                            onclick="viewOrderDetails(@order.Id)"
+                                            title="View Details">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+
+                                    <!-- Update Status -->
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-secondary dropdown-toggle"
+                                                data-bs-toggle="dropdown"
+                                                title="Change Status">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                            <li>
+                                                <button class="dropdown-item"
+                                                        onclick="updateStatus(@order.Id, 'Processing')">
+                                                    <i class="fa-solid fa-clock me-2 text-warning"></i> Processing
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item"
+                                                        onclick="updateStatus(@order.Id, 'Completed')">
+                                                    <i class="fa-solid fa-check me-2 text-success"></i> Completed
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item"
+                                                        onclick="updateStatus(@order.Id, 'Cancelled')">
+                                                    <i class="fa-solid fa-ban me-2 text-danger"></i> Cancelled
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Delete -->
+                                    <button class="btn btn-sm btn-danger"
+                                            onclick="deleteOrder(@order.Id)"
+                                            title="Delete Order">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal fade" id="orderDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-semibold">Order Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="orderDetailsBody">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-secondary" role="status"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/admin-orders.js"></script>
+}

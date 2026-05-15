@@ -426,5 +426,107 @@ namespace E_commerce_Website__Skincare_.Controllers
 
             return Json(new { success = true, messsage = "Profile updated successfully" });
         }
+
+
+        // GET: /Admin/Categories
+        public async Task<IActionResult> Categories()
+        {
+            var categories = await _context.Categories
+                                   .Include(c => c.Products)
+                                   .ToListAsync();
+            return View(categories);
+        }
+
+        // POST: /Admin/AddCategory
+        [HttpPost]
+        public async Task<IActionResult> AddCategory(Category category)
+        {
+            _context.Categories.Add(category);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Categories");
+        }
+
+        // POST: /Admin/EditCategory
+        [HttpPost]
+        public async Task<IActionResult> EditCategory(Category category)
+        {
+            var existingCategory = await _context.Categories
+                .FindAsync(category.Id);
+
+            if (existingCategory == null)
+            {
+                return NotFound();
+            }
+
+            existingCategory.Name = category.Name;
+            existingCategory.ImageUrl = category.ImageUrl;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Categories");
+        }
+
+        // POST: /Admin/DeleteCategory
+        [HttpPost]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var category = await _context.Categories
+                .Include(c => c.Products) // Load the related products
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (category == null)
+            {
+                return Json(new { success = false, message = "Error: Category not found" });
+            }
+
+            // Check if category is empty before allowing delete
+            if (category.Products != null && category.Products.Any())
+            {
+                return Json(new { success = false, message = "Cannot delete: This category contains products." });
+            }
+
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Category deleted successfully" });
+        }
+
+        //Get: /Dashboard 
+        public async Task<IActionResult> Dashboard()
+        {
+            // Basic Stats
+            ViewBag.TotalProducts = await _context.Products.CountAsync();
+            ViewBag.TotalCategories = await _context.Categories.CountAsync();
+            ViewBag.TotalOrders = await _context.Orders.CountAsync();
+            ViewBag.TotalUsers = await _context.Users.CountAsync();
+
+            var last7Days = Enumerable.Range(0, 7)
+                .Select(i => DateTime.Today.AddDays(-i))
+                .OrderBy(d => d).ToList();
+
+            // Weekly Orders anonymous list
+            var orders = await _context.Orders
+                .Where(o => o.OrderDate >= DateTime.Today.AddDays(-6))
+                .ToListAsync();
+
+            ViewBag.WeeklyOrders = last7Days.Select(day => new {
+                DayLabel = day.ToString("ddd").Substring(0, 1),
+                Count = orders.Count(o => o.OrderDate.Date == day.Date)
+            }).ToList();
+
+            //// Weekly Users anonymous list
+            //var users = await _context.Users
+            //    .Where(u => u.CreatedAt >= DateTime.Today.AddDays(-6))
+            //    .ToListAsync();
+
+            //ViewBag.WeeklyNewUsers = last7Days.Select(day => new {
+            //    DayLabel = day.ToString("ddd").Substring(0, 1),
+            //    Count = users.Count(u => u.CreatedAt.Date == day.Date)
+            //}).ToList();
+
+            return View();
+        }
     }
 }

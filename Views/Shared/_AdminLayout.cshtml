@@ -3,10 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>@ViewData["Title"] - E_commerce_Website__Skincare_</title>
-
-    <!-- Bootstrap -->
+    <title>@ViewData["Title"] - GlowCare Admin</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
     <!-- Site CSS -->
@@ -18,6 +15,8 @@
 
     <!-- Google Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
     <!-- Font Awesome -->
     <link rel="stylesheet"
@@ -35,59 +34,52 @@
 
         <nav class="sidebar-nav">
 
-            <a href="#" class="nav-item active">
-                <i class="fa-solid fa-grid-2 nav-icon"></i>
-                Dashboard
+            <a asp-controller="Admin" asp-action="Dashboard"
+               class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active" : "")">
+                <i class="fa-solid fa-chart-pie nav-icon"></i> Dashboard
             </a>
 
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-cart-shopping nav-icon"></i>
-                Orders
-
-                <span class="nav-badge">
-                    @ViewData["NumOfNewOrders"]
-                </span>
+            <a asp-controller="Admin" asp-action="OrdersInfo"
+               class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "OrdersInfo" ? "active" : "")">
+                <i class="fa-solid fa-cart-shopping nav-icon"></i> Orders
+                @if (ViewData["NumOfNewOrders"] != null)
+                {
+                    <span class="nav-badge">@ViewData["NumOfNewOrders"]</span>
+                }
             </a>
 
-            <a asp-controller="Admin"
-               asp-action="UsersInfo"
-               class="nav-item">
-
-                <i class="fa-solid fa-users nav-icon"></i>
-                Users
+            <a asp-controller="Admin" asp-action="UsersInfo"
+               class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "UsersInfo" ? "active" : "")">
+                <i class="fa-solid fa-users nav-icon"></i> Users
             </a>
 
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-tags nav-icon"></i>
-                Categories
+            <a asp-controller="Admin" asp-action="Categories"
+               class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "CategoriesInfo" ? "active" : "")">
+                <i class="fa-solid fa-tags nav-icon"></i> Categories
             </a>
 
-            <a asp-controller="Admin"
-               asp-action="ProductsInfo"
-               class="nav-item">
-
-                <i class="fa-solid fa-box nav-icon"></i>
-                Products
+            <a asp-controller="Admin" asp-action="ProductsInfo"
+               class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "ProductsInfo" ? "active" : "")">
+                <i class="fa-solid fa-box nav-icon"></i> Products
             </a>
 
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-star nav-icon"></i>
-                Reviews / Testimonials
-
-                <span class="nav-badge">
-                    @ViewData["NumOfNotificationsToApproveOrRejectIt"]
-                </span>
+            <a asp-controller="Admin" asp-action="Testimonials"
+               class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Testimonials" ? "active" : "")">
+                <i class="fa-solid fa-star nav-icon"></i> Reviews
+                @if (ViewData["NumOfNotificationsToApproveOrRejectIt"] != null)
+                {
+                    <span class="nav-badge">@ViewData["NumOfNotificationsToApproveOrRejectIt"]</span>
+                }
             </a>
 
         </nav>
 
         <div class="sidebar-bottom">
-
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-arrow-right-from-bracket nav-icon"></i>
-                Logout
-            </a>
-
+            <form asp-area="Identity" asp-page="/Account/Logout" method="post">
+                <button type="submit" class="nav-item w-100 border-0 bg-transparent text-start">
+                    <i class="fa-solid fa-arrow-right-from-bracket nav-icon"></i> Logout
+                </button>
+            </form>
         </div>
 
     </aside>
@@ -97,32 +89,21 @@
 
         <!-- ═════════════ TOPBAR ═════════════ -->
         <header class="topbar">
-
             <span class="topbar-title">
-                Hello Admin
+                Hello, @(ViewData["AdminName"] ?? "Admin")
             </span>
 
             <div class="topbar-search">
-
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-                <input type="text"
-                       placeholder="Search data..." />
-
             </div>
 
-            <div class="topbar-user">
-
+            <div class="topbar-user" onclick="openProfile()" title="Edit Profile">
                 <div class="topbar-user-info">
-                    <div class="name">
-                        Salwa Ali
-                    </div>
+                    <div class="name"> @(ViewData["AdminName"] ?? "Admin")</div>
+                    <div class="role">Administrator</div>
                 </div>
-
                 <div class="avatar">
-                    @ViewData["ProfilePic"]
+                    @(((string)ViewData["AdminName"])?.Substring(0, 1).ToUpper() ?? "A")
                 </div>
-
             </div>
 
         </header>
@@ -134,7 +115,7 @@
 
         </main>
 
-        <!-- ═════════════ FOOTER ═════════════ -->
+        <!-- ═══ FOOTER ═══ -->
         <footer class="footer">
 
             <div class="footer-grid">
@@ -169,12 +150,9 @@
                 <div class="footer-col">
 
                     <h4>System Status</h4>
-
                     <p style="font-size:13px;margin-bottom:10px;">
-                        <span class="status-dot"></span>
-                        All systems operational
+                        <span class="status-dot"></span>All systems operational
                     </p>
-
                     <a href="#">Privacy Policy</a>
                     <a href="#">Terms of Service</a>
 
@@ -183,12 +161,35 @@
             </div>
 
         </footer>
-
     </div>
 
-    <!-- Bootstrap JS -->
+  
+
+    @* <!-- ═══ PROFILE MODAL ═══ -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-semibold">My Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="profileModalBody">
+                    <div class="text-center py-4">
+                        <div class="spinner-border" style="color:var(--olive);" role="status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> *@
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/admin-profile.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
+
+
 </body>
 </html>

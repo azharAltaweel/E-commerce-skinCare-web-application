@@ -1,0 +1,244 @@
+﻿@model IEnumerable<E_commerce_Website__Skincare_.Models.Category>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="~/css/categpryAdminPage.css" rel="stylesheet" />
+
+
+<div class="page-header">
+    <div>
+        <h2>Categories</h2>
+        <p>Manage your categories — add, edit, or remove them.</p>
+    </div>
+    <button class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#addCategoryModal" >
+
+        <i class="fa-solid fa-plus"></i> Add Category
+    </button>
+</div>
+
+@* Search bar *@
+<div class="toolbar">
+    <div class="toolbar-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Search categories..." oninput="filterCategories()">
+    </div>
+    <div class="toolbar-divider"></div>
+    <div class="toolbar-sort">
+        <label>Sort by</label>
+        <select id="sortSelect" onchange="filterCategories()">
+            <option value="id">ID</option>
+            <option value="name">Name A–Z</option>
+        </select>
+    </div>
+    <span class="count-pill" id="countPill">
+        @Model.Count() @(Model.Count() == 1 ? "category" : "categories")
+    </span>
+</div>
+
+
+
+@* Table  *@
+
+<div class="cat-table-wrap active" id="catTable">
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:50px;">ID</th>
+                    <th style="width:64px;">Image</th>
+                    <th style="min-width:160px;">Name</th>
+                    <th style="width:130px;">Products</th>
+                    <th style="width:130px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="color:var(--muted);font-weight:600;font-size:12px;">#@item.Id</td>
+                        <td>
+                            <div style="position:relative;width:48px;height:48px;">
+                                <img src="@item.ImageUrl" class="tbl-img" style="width:48px;height:48px;object-fit:cover;" alt="@item.Name" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                <div class="tbl-img-placeholder" style="display:none;width:48px;height:48px;"><i class="fa-solid fa-image"></i></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-weight:500;font-size:14px;color:var(--charcoal);">@item.Name</div>
+                        </td>
+                       
+                        <td>
+                            <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500; color:var(--olive-dark);background:var(--green-badge);border-radius:20px;padding:4px 10px;">
+                                <i class="fa-solid fa-box" style="font-size:10px;"></i>
+                                @item.Products?.Count.ToString() products
+                            </span>
+                        </td>
+                        <td>
+                            <div style="display:flex;gap:6px;">
+                                <button class="btn btn-secondary btn-sm"
+                                        onclick="openEditModal('@item.Id', '@item.Name', '@item.ImageUrl')">
+
+                                    <i class="fa-regular fa-pen-to-square"></i> Edit
+                                </button>
+                                <button class="btn-icon danger btn" onclick="confirmDelete(@item.Id)" title="Delete category">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">Add Category</h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <!-- Form -->
+            <form asp-action="AddCategory" method="post">
+
+                <div class="modal-body">
+
+                    <!-- Category Name -->
+                    <div class="mb-3">
+                        <label class="form-label">Category Name</label>
+
+                        <input type="text"
+                               name="Name"
+                               class="form-control"
+                               placeholder="Enter category name"
+                               required>
+                    </div>
+
+                    <!-- Image URL -->
+                    <div class="mb-3">
+                        <label class="form-label">Image URL</label>
+
+                        <input type="file"
+                               name="ImageUrl"
+                               class="form-control"
+                               placeholder="Enter image url"
+                               required>
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-success">
+                        Save Category
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Category</h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <!-- Form -->
+            <form asp-action="EditCategory" method="post">
+
+                <div class="modal-body">
+
+                    <!-- Hidden ID -->
+                    <input type="hidden"
+                           id="editId"
+                           name="Id" />
+
+                    <!-- Name -->
+                    <div class="mb-3">
+                        <label class="form-label">Category Name</label>
+
+                        <input type="text"
+                               id="editName"
+                               name="Name"
+                               class="form-control"
+                               required>
+                    </div>
+
+                    <!-- Image URL -->
+                    <div class="mb-3">
+                        <label class="form-label">Image URL</label>
+
+                        <input type="text"
+                               id="editImage"
+                               name="ImageUrl"
+                               class="form-control"
+                               required>
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/CategoryAdmin.js"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- jQuery (Required for $.ajax) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

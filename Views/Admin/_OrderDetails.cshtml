@@ -1,0 +1,96 @@
+﻿@using E_commerce_Website__Skincare_.Models
+@model Order
+
+<div class="p-2">
+
+    <!-- Order Meta -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card border-0" style="background:var(--cream);border-radius:10px;">
+                <div class="card-body-padded p-3">
+                    <p class="mb-1" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Customer</p>
+                    <p class="fw-semibold mb-0">@Model.User?.FullName</p>
+                    <p style="font-size:12px;color:var(--muted);">@Model.User?.Email</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0" style="background:var(--cream);border-radius:10px;">
+                <div class="p-3">
+                    <p class="mb-1" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Order Info</p>
+                    <p class="fw-semibold mb-0">Order #@Model.Id</p>
+                    <p style="font-size:12px;color:var(--muted);">@Model.OrderDate.ToString("MMMM dd, yyyy - hh:mm tt")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Items -->
+    <h6 class="fw-semibold mb-3" style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">
+        Items (@Model.OrderItems?.Count())
+    </h6>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <table class="table mb-0">
+            <thead>
+                <tr style="background:var(--cream);">
+                    <th style="padding:10px 16px;font-size:11px;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);">Product</th>
+                    <th style="padding:10px 16px;font-size:11px;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);">Price</th>
+                    <th style="padding:10px 16px;font-size:11px;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);">Qty</th>
+                    <th style="padding:10px 16px;font-size:11px;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderItems ?? Enumerable.Empty<OrderItem>())
+                {
+                    <tr>
+                        <td style="padding:12px 16px;font-size:13px;font-weight:500;">
+                            @item.Product?.Name
+                        </td>
+                        <td style="padding:12px 16px;font-size:13px;color:var(--muted);">
+                            $@item.Price.ToString("0.00")
+                        </td>
+                        <td style="padding:12px 16px;font-size:13px;">
+                            <span class="badge" style="background:var(--cream-dark);color:var(--charcoal);">
+                                x@item.Quantity
+                            </span>
+                        </td>
+                        <td style="padding:12px 16px;font-size:13px;font-weight:600;">
+                            $@((item.Price * item.Quantity).ToString("0.00"))
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Total -->
+    <div class="d-flex justify-content-end">
+        <div class="text-end">
+            <div class="d-flex gap-5 mb-1" style="font-size:13px;color:var(--muted);">
+                <span>Subtotal</span>
+                <span>$@Model.TotalAmount.ToString("0.00")</span>
+            </div>
+            <div class="d-flex gap-5" style="font-size:16px;font-weight:700;color:var(--charcoal);">
+                <span>Total</span>
+                <span>$@Model.TotalAmount.ToString("0.00")</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status -->
+    <div class="mt-3 pt-3" style="border-top:1px solid var(--border);">
+        @{
+            var badgeClass = Model.Status switch
+            {
+                "Completed" => "badge-shipped",
+                "Processing" => "badge-processing",
+                "Cancelled" => "badge-cancelled",
+                _ => "badge-pending"
+            };
+        }
+        <span style="font-size:12px;color:var(--muted);">Status: </span>
+        <span class="badge @badgeClass">@Model.Status</span>
+    </div>
+
+</div>

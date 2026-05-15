@@ -1,0 +1,277 @@
+﻿@using E_commerce_Website__Skincare_.Models
+@model IEnumerable<Testimonial>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Reviews & Testimonials";
+
+    var reviews = ViewBag.Reviews as IEnumerable<Review> ?? Enumerable.Empty<Review>();
+}
+
+<div class="container-fluid p-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Reviews &amp; Testimonials</h2>
+            <p class="text-muted">Approve or reject customer reviews and testimonials</p>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs border-0 mb-4" id="reviewTabs">
+        <li class="nav-item">
+            <button class="nav-link active fw-medium"
+                    id="testimonials-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#testimonialsPane"
+                    type="button"
+                    style="color:var(--charcoal);">
+                <i class="fa-solid fa-quote-left me-1"></i>
+                Testimonials
+                <span class="badge ms-1"
+                      style="background:var(--olive-light);color:#fff;font-size:11px;border-radius:10px;padding:2px 8px;">
+                    @Model.Count()
+                </span>
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link fw-medium"
+                    id="reviews-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#reviewsPane"
+                    type="button"
+                    style="color:var(--muted);">
+                <i class="fa-solid fa-star me-1"></i>
+                Product Reviews
+                <span class="badge ms-1"
+                      style="background:var(--olive-light);color:#fff;font-size:11px;border-radius:10px;padding:2px 8px;">
+                    @reviews.Count()
+                </span>
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+
+        <!-- ═══ TESTIMONIALS TAB ═══ -->
+        <div class="tab-pane fade show active" id="testimonialsPane">
+
+            <!-- Filter Bar -->
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="filter-bar">
+                    <span class="filter-label">Filter:</span>
+                    <input type="text" id="testimonialSearch"
+                           placeholder="Search by user..."
+                           style="width:200px;" />
+                    <select id="testimonialStatusFilter">
+                        <option value="">All</option>
+                        <option value="approved">Approved</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                    <button class="btn btn-secondary btn-sm ms-auto"
+                            onclick="clearTestimonialFilters()">
+                        <i class="fa-solid fa-xmark"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <table class="table table-hover align-middle" id="testimonialsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Customer</th>
+                                <th>Message</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var t in Model)
+                            {
+                                <tr id="testimonial-row-@t.Id"
+                                    data-user="@t.User?.FullName?.ToLower()"
+                                    data-status="@(t.IsApproved ? "approved" : "pending")">
+
+                                    <td class="text-muted" style="font-size:13px;">#@t.Id</td>
+
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar" style="width:32px;height:32px;font-size:11px;">
+                                                @(t.User?.FullName?.Substring(0, 1).ToUpper() ?? "?")
+                                            </div>
+                                            <div>
+                                                <div style="font-size:13px;font-weight:500;">@t.User?.FullName</div>
+                                                <div style="font-size:11px;color:var(--muted);">@t.User?.Email</div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td style="max-width:380px;">
+                                        <p class="mb-0" style="font-size:13px;color:var(--charcoal);line-height:1.5;">
+                                            "@t.Content"
+                                        </p>
+                                    </td>
+
+                                    <td>
+                                        <span id="testimonial-badge-@t.Id"
+                                              class="badge @(t.IsApproved ? "badge-shipped" : "badge-pending")">
+                                            @(t.IsApproved ? "Approved" : "Pending")
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <button class="btn btn-sm @(t.IsApproved ? "btn-secondary" : "btn-primary")"
+                                                    id="testimonial-btn-@t.Id"
+                                                    onclick="approveTestimonial(@t.Id)">
+                                                @(t.IsApproved ? "Revoke" : "Approve")
+                                            </button>
+                                            <button class="btn btn-sm btn-danger"
+                                                    onclick="deleteTestimonial(@t.Id)">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ═══ PRODUCT REVIEWS TAB ═══ -->
+        <div class="tab-pane fade" id="reviewsPane">
+
+            <!-- Filter Bar -->
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="filter-bar">
+                    <span class="filter-label">Filter:</span>
+                    <input type="text" id="reviewSearch"
+                           placeholder="Search by user or product..."
+                           style="width:220px;" />
+                    <select id="reviewStatusFilter">
+                        <option value="">All</option>
+                        <option value="approved">Approved</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                    <select id="reviewRatingFilter">
+                        <option value="">All Ratings</option>
+                        <option value="5">★★★★★ (5)</option>
+                        <option value="4">★★★★☆ (4)</option>
+                        <option value="3">★★★☆☆ (3)</option>
+                        <option value="2">★★☆☆☆ (2)</option>
+                        <option value="1">★☆☆☆☆ (1)</option>
+                    </select>
+                    <button class="btn btn-secondary btn-sm ms-auto"
+                            onclick="clearReviewFilters()">
+                        <i class="fa-solid fa-xmark"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <table class="table table-hover align-middle" id="reviewsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Customer</th>
+                                <th>Product</th>
+                                <th>Comment</th>
+                                <th>Rating</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var r in reviews)
+                            {
+                                <tr id="review-row-@r.Id"
+                                    data-user="@r.User?.FullName?.ToLower()"
+                                    data-product="@r.Product?.Name?.ToLower()"
+                                    data-status="@(r.IsApproved ? "approved" : "pending")"
+                                    data-rating="@r.Rating">
+
+                                    <td class="text-muted" style="font-size:13px;">#@r.Id</td>
+
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar" style="width:32px;height:32px;font-size:11px;">
+                                                @(r.User?.FullName?.Substring(0, 1).ToUpper() ?? "?")
+                                            </div>
+                                            <div>
+                                                <div style="font-size:13px;font-weight:500;">@r.User?.FullName</div>
+                                                <div style="font-size:11px;color:var(--muted);">@r.User?.Email</div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td style="font-size:13px;font-weight:500;">
+                                        @r.Product?.Name
+                                    </td>
+
+                                    <td style="max-width:280px;">
+                                        <p class="mb-0" style="font-size:13px;color:var(--charcoal);line-height:1.5;">
+                                            @r.Comment
+                                        </p>
+                                    </td>
+
+                                    <td>
+                                        <span style="color:#D4A017;font-size:13px;">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= r.Rating)
+                                                {
+                                                    <i class="fa-solid fa-star"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa-regular fa-star" style="color:var(--border);"></i>
+                                                }
+                                            }
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span id="review-badge-@r.Id"
+                                              class="badge @(r.IsApproved ? "badge-shipped" : "badge-pending")">
+                                            @(r.IsApproved ? "Approved" : "Pending")
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <button class="btn btn-sm @(r.IsApproved ? "btn-secondary" : "btn-primary")"
+                                                    id="review-btn-@r.Id"
+                                                    onclick="approveReview(@r.Id)">
+                                                @(r.IsApproved ? "Revoke" : "Approve")
+                                            </button>
+                                            <button class="btn btn-sm btn-danger"
+                                                    onclick="deleteReview(@r.Id)">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/admin-testimonials.js"></script>
+}
