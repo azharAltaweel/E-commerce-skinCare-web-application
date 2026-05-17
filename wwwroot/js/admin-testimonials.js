@@ -1,4 +1,4 @@
-﻿// ═══ TESTIMONIALS & REVIEWS PAGE JS ═══
+// ═══ TESTIMONIALS & REVIEWS PAGE JS ═══
 
 // ─── TESTIMONIALS ───
 
@@ -36,26 +36,36 @@ function approveTestimonial(id) {
 }
 
 function deleteTestimonial(id) {
-    if (!confirm('Delete this testimonial? This cannot be undone.')) return;
-
-    fetch('/Admin/DeleteTestimonial', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${id}`
-    })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                const row = document.getElementById(`testimonial-row-${id}`);
-                if (row) {
-                    row.style.transition = 'opacity 0.3s';
-                    row.style.opacity = '0';
-                    setTimeout(() => row.remove(), 300);
-                }
-                showToast('Testimonial deleted', 'success');
-            }
-        })
-        .catch(() => showToast('Delete failed', 'error'));
+    GlowAlert.fire({
+        title: 'Delete Testimonial?',
+        text: 'Are you sure you want to delete this testimonial? This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#eae3db',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('/Admin/DeleteTestimonial', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${id}`
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        const row = document.getElementById(`testimonial-row-${id}`);
+                        if (row) {
+                            row.style.transition = 'opacity 0.3s';
+                            row.style.opacity = '0';
+                            setTimeout(() => row.remove(), 300);
+                        }
+                        showToast('Testimonial deleted', 'success');
+                    }
+                })
+                .catch(() => showToast('Delete failed', 'error'));
+        }
+    });
 }
 
 // ─── REVIEWS ───
@@ -94,26 +104,36 @@ function approveReview(id) {
 }
 
 function deleteReview(id) {
-    if (!confirm('Delete this review? This cannot be undone.')) return;
-
-    fetch('/Admin/DeleteReview', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${id}`
-    })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                const row = document.getElementById(`review-row-${id}`);
-                if (row) {
-                    row.style.transition = 'opacity 0.3s';
-                    row.style.opacity = '0';
-                    setTimeout(() => row.remove(), 300);
-                }
-                showToast('Review deleted', 'success');
-            }
-        })
-        .catch(() => showToast('Delete failed', 'error'));
+    GlowAlert.fire({
+        title: 'Delete Review?',
+        text: 'Are you sure you want to delete this review? This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#eae3db',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('/Admin/DeleteReview', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${id}`
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        const row = document.getElementById(`review-row-${id}`);
+                        if (row) {
+                            row.style.transition = 'opacity 0.3s';
+                            row.style.opacity = '0';
+                            setTimeout(() => row.remove(), 300);
+                        }
+                        showToast('Review deleted', 'success');
+                    }
+                })
+                .catch(() => showToast('Delete failed', 'error'));
+        }
+    });
 }
 
 // ─── TESTIMONIAL FILTERS ───
@@ -174,22 +194,6 @@ function clearReviewFilters() {
 
 // ─── TOAST ───
 function showToast(message, type) {
-    const existing = document.getElementById('adminToast');
-    if (existing) existing.remove();
-
-    const colors = { success: 'var(--olive)', error: '#c0392b', info: 'var(--muted)' };
-    const icons = { success: 'fa-check-circle', error: 'fa-circle-xmark', info: 'fa-info-circle' };
-
-    const toast = document.createElement('div');
-    toast.id = 'adminToast';
-    toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.success} me-2"></i>${message}`;
-    Object.assign(toast.style, {
-        position: 'fixed', bottom: '24px', right: '24px', zIndex: '9999',
-        background: colors[type] || colors.success, color: '#fff',
-        padding: '12px 20px', borderRadius: '8px', fontSize: '13px',
-        fontWeight: '500', boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
-        transition: 'opacity 0.3s', display: 'flex', alignItems: 'center'
-    });
-    document.body.appendChild(toast);
-    setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+    let icon = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+    GlowAlert.toast(message, icon);
 }

@@ -184,6 +184,26 @@
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/admin-profile.js"></script>
+    
+    <!-- SweetAlert2 & GlowCare Custom Alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/glowcare-alerts.js" asp-append-version="true"></script>
+    
+    @if (TempData["Success"] != null || TempData["SuccessMessage"] != null || TempData["Error"] != null || TempData["ErrorMessage"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var successMsg = '@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode((string)(TempData["Success"] ?? TempData["SuccessMessage"] ?? "")))';
+                var errorMsg = '@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode((string)(TempData["Error"] ?? TempData["ErrorMessage"] ?? "")))';
+                if (successMsg) {
+                    GlowAlert.success('Success!', successMsg);
+                } else if (errorMsg) {
+                    GlowAlert.error('Oops...', errorMsg);
+                }
+            });
+        </script>
+    }
+
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>

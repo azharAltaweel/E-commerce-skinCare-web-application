@@ -1,4 +1,4 @@
-﻿// ═══ PROFILE MODAL JS ═══
+// ═══ PROFILE MODAL JS ═══
 
 // Open profile modal — call this from the topbar avatar click
 function openProfile() {
@@ -59,12 +59,11 @@ function saveProfile() {
 }
 
 function showProfileAlert(message, type) {
-    const el = document.getElementById('profileAlert');
-    if (!el) return;
-    el.className = `alert alert-${type}`;
-    el.textContent = message;
-    el.classList.remove('d-none');
-    setTimeout(() => el.classList.add('d-none'), 4000);
+    if (type === 'success') {
+        GlowAlert.toast(message, 'success');
+    } else {
+        GlowAlert.error('Error', message);
+    }
 }
 
 // Toggle password visibility

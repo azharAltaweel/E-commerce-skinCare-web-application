@@ -1,4 +1,4 @@
-﻿using E_commerce_Website__Skincare_.Data;
+using E_commerce_Website__Skincare_.Data;
 using E_commerce_Website__Skincare_.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -56,7 +56,7 @@ namespace E_commerce_Website__Skincare_.Controllers
             TempData["SuccessMessage"] = "Item added to cart successfully!";
 
             // Redirect back to the page the user was on
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("HomePage");
         }
 
 

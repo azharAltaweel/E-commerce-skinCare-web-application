@@ -63,3 +63,87 @@ body {
         border-top-right-radius: 12px;
         border-bottom-right-radius: 12px;
     }
+
+/* ════════════════════════════════════════════════ */
+/*               GLOWCARE SWEETALERT2 STYLES        */
+/* ════════════════════════════════════════════════ */
+.swal2-popup.glowcare-swal-popup {
+    font-family: 'Inter', sans-serif !important;
+    border-radius: 20px !important;
+    background: #fdf9f4 !important; /* Premium cream background */
+    border: 1px solid rgba(99, 95, 64, 0.12) !important;
+    box-shadow: 0 15px 40px rgba(99, 95, 64, 0.1) !important;
+    padding: 2.5rem 2rem !important;
+}
+
+.swal2-title.glowcare-swal-title {
+    font-family: 'Playfair Display', serif !important;
+    color: #635f40 !important; /* GlowCare signature olive */
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.8rem !important;
+}
+
+.swal2-html-container.glowcare-swal-html {
+    font-family: 'Inter', sans-serif !important;
+    color: #4a4a4a !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.swal2-confirm.glowcare-swal-confirm {
+    background-color: #635f40 !important; /* GlowCare signature olive */
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 30px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 4px 12px rgba(99, 95, 64, 0.2) !important;
+    transition: all 0.25s ease !important;
+    outline: none !important;
+}
+
+.swal2-confirm.glowcare-swal-confirm:hover {
+    background-color: #4f4b32 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 16px rgba(99, 95, 64, 0.3) !important;
+}
+
+.swal2-cancel.glowcare-swal-cancel {
+    background-color: #eae3db !important;
+    color: #555555 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 30px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    transition: all 0.25s ease !important;
+    margin-left: 10px !important;
+    outline: none !important;
+}
+
+.swal2-cancel.glowcare-swal-cancel:hover {
+    background-color: #dfd6cb !important;
+    color: #333333 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Toast custom styles */
+.swal2-popup.swal2-toast.glowcare-swal-toast {
+    background: #fdf9f4 !important;
+    border: 1px solid rgba(99, 95, 64, 0.15) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(99, 95, 64, 0.12) !important;
+    padding: 12px 18px !important;
+}
+
+.swal2-popup.swal2-toast.glowcare-swal-toast .swal2-title {
+    color: #635f40 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}

@@ -1,4 +1,4 @@
-﻿// ═══ ORDERS PAGE JS ═══
+// ═══ ORDERS PAGE JS ═══
 
 // View order details in modal
 function viewOrderDetails(orderId) {
@@ -50,26 +50,36 @@ function updateStatus(orderId, status) {
 
 // Delete order
 function deleteOrder(orderId) {
-    if (!confirm(`Delete Order #${orderId}? This cannot be undone.`)) return;
-
-    fetch('/Admin/DeleteOrder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `orderId=${orderId}`
-    })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                const row = document.querySelector(`tr[data-id="${orderId}"]`);
-                if (row) {
-                    row.style.transition = 'opacity 0.3s';
-                    row.style.opacity = '0';
-                    setTimeout(() => row.remove(), 300);
-                }
-                showToast(`Order #${orderId} deleted`, 'success');
-            }
-        })
-        .catch(() => showToast('Failed to delete order', 'error'));
+    GlowAlert.fire({
+        title: 'Delete Order?',
+        text: `Are you sure you want to delete Order #${orderId}? This action cannot be undone.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#eae3db',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('/Admin/DeleteOrder', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `orderId=${orderId}`
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        const row = document.querySelector(`tr[data-id="${orderId}"]`);
+                        if (row) {
+                            row.style.transition = 'opacity 0.3s';
+                            row.style.opacity = '0';
+                            setTimeout(() => row.remove(), 300);
+                        }
+                        showToast(`Order #${orderId} deleted`, 'success');
+                    }
+                })
+                .catch(() => showToast('Failed to delete order', 'error'));
+        }
+    });
 }
 
 // ─── FILTERS ───
@@ -121,23 +131,6 @@ function clearFilters() {
 
 // ─── TOAST ───
 function showToast(message, type) {
-    const existing = document.getElementById('adminToast');
-    if (existing) existing.remove();
-
-    const color = type === 'success' ? 'var(--olive)' : '#c0392b';
-    const icon = type === 'success' ? 'fa-check-circle' : 'fa-circle-xmark';
-
-    const toast = document.createElement('div');
-    toast.id = 'adminToast';
-    toast.innerHTML = `<i class="fa-solid ${icon} me-2"></i>${message}`;
-    Object.assign(toast.style, {
-        position: 'fixed', bottom: '24px', right: '24px', zIndex: '9999',
-        background: color, color: '#fff', padding: '12px 20px',
-        borderRadius: '8px', fontSize: '13px', fontWeight: '500',
-        boxShadow: '0 4px 16px rgba(0,0,0,0.15)', transition: 'opacity 0.3s',
-        display: 'flex', alignItems: 'center'
-    });
-
-    document.body.appendChild(toast);
-    setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+    let icon = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+    GlowAlert.toast(message, icon);
 }
