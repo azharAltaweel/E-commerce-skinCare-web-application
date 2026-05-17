@@ -136,6 +136,12 @@
                                 @product.StockQuantity
                             </td>
                             <td class="d-flex gap-2 m-1">
+                                <a asp-action="ProductDetails"
+                                   asp-route-id="@product.Id"
+                                   class="btn btn-dark btn-sm">
+
+                                    Details
+                                </a>
 
                                 <button class="btn btn-primary btn-sm"
                                         data-bs-toggle="modal"
@@ -148,7 +154,6 @@
                                         onclick="confirmDelete(@product.Id)">
                                     Delete
                                 </button>
-
                             </td>
                         </tr>
 

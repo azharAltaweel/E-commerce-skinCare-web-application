@@ -93,59 +93,141 @@
     gap: 4px;
     margin-left: auto;
 }
-function confirmDelete(productId) {
-    Swal .fire({
-        title: 'Are you sure?',
-        text: "This product will be permanently deleted.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
 
-        if (result.isConfirmed) {
 
-            $.ajax({
-                type: "POST",
-                url: '/Admin/DeleteProduct', // 👈 changed to Product
-                data: { id: productId },
+//product details page
 
-                success: function (response) {
+body {
+    background: #f8f6f3;
+}
 
-                    if (response.success) {
+.details-page {
+    font-family: 'DM Sans', sans-serif;
+}
 
-                        // ✅ Success message
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: response.message,
-                            icon: 'success',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
+/* LEFT */
 
-                        // ✅ remove row without reload
-                        $(`button[onclick="confirmDelete(${productId})"]`)
-                            .closest('tr')
-                            .fadeOut(300, function () {
-                                $(this).remove();
-                            });
+.product-gallery-card {
+    background: white;
+    border-radius: 28px;
+    padding: 22px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
 
-                        // ✅ update counter (optional but nice)
-                        let count = parseInt($('#countPill').text()) || 0;
-                        $('#countPill').text((count - 1) + " products");
+.main-image-wrapper {
+    overflow: hidden;
+    border-radius: 22px;
+    margin-bottom: 18px;
+}
 
-                    } else {
+.main-product-image {
+    width: 100%;
+    height: 480px;
+    object-fit: cover;
+    transition: 0.3s;
+}
 
-                        Swal.fire('Error', response.message, 'error');
-                    }
-                },
+.thumbnail-container {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
 
-                error: function () {
+.thumbnail-image {
+    width: 85px;
+    height: 85px;
+    border-radius: 16px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.25s;
+}
 
-                    Swal.fire('Error', 'Something went wrong!', 'error');
-                }
-            });
-        }
-    });
+    .thumbnail-image:hover {
+        border-color: #d7c3a5;
+        transform: scale(1.05);
+    }
+
+/* RIGHT */
+
+.product-info-card {
+    background: white;
+    border-radius: 28px;
+    padding: 34px;
+    height: 100%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.category-badge {
+    background: #f5ede3;
+    color: #9b6b43;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.product-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #2b2b2b;
+}
+
+.discount-badge {
+    background: #dff4e5;
+    color: #2d8a4d;
+    padding: 10px 16px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.product-price {
+    font-size: 34px;
+    font-weight: 700;
+    color: #111;
+}
+
+.stock-pill {
+    background: #111;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-size: 14px;
+}
+
+.section-title {
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: #222;
+}
+
+.description-text {
+    line-height: 1.9;
+    color: #666;
+}
+
+.review-card {
+    background: #faf8f5;
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+.review-rating {
+    color: #d6a54b;
+    font-weight: 700;
+}
+
+.review-count {
+    color: #999;
+    font-size: 14px;
+}
+
+.empty-review-box {
+    background: #faf8f5;
+    border-radius: 18px;
+    padding: 25px;
+    text-align: center;
+    color: #999;
 }

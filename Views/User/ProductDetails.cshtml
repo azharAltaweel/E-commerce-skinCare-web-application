@@ -1,0 +1,588 @@
+﻿@model E_commerce_Website__Skincare_.Models.Product
+
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    ViewData["Title"] = "Product Details";
+
+    // First Image
+    var mainImage =
+        Model.Images?.FirstOrDefault()?.ImageUrl
+        ?? "/images/no-image.png";
+
+    // Check discount
+    bool hasDiscount =
+        Model.Discount != null
+        && DateTime.Now >= Model.Discount.StartDate
+        && DateTime.Now <= Model.Discount.EndDate;
+
+    // Calculate final price
+    decimal finalPrice =
+        hasDiscount
+        ? Model.Price -
+          (Model.Price * Model.Discount.Percentage / 100)
+        : Model.Price;
+
+    // Average Rating
+    var averageRating =
+        Model.Reviews.Any()
+        ? Model.Reviews.Average(r => r.Rating)
+        : 0;
+
+    var relatedProducts =
+ViewData["RelatedProducts"]
+as List<E_commerce_Website__Skincare_.Models.Product>;
+}
+
+<link rel="stylesheet"
+      href="~/css/ProductDetails-User.css" />
+
+<div class="container py-5">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success
+                    alert-dismissible
+                    fade show
+                    rounded-4">
+
+            @TempData["Success"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger
+                    alert-dismissible
+                    fade show
+                    rounded-4">
+
+            @TempData["Error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+
+    <!-- BREADCRUMB -->
+    <div class="mb-4">
+
+        <a asp-controller="User"
+           asp-action="Products"
+           class="text-decoration-none text-muted">
+
+            Products
+
+        </a>
+
+        <span class="mx-2">/</span>
+
+        <span class="fw-semibold">
+            @Model.Name
+        </span>
+
+    </div>
+
+
+    <div class="row g-5">
+
+        <!-- =========================
+             LEFT SIDE (IMAGES)
+        ========================== -->
+
+        <div class="col-lg-6">
+
+            <div class="row">
+
+                <!-- THUMBNAILS -->
+                <div class="col-2">
+
+                    <div class="thumbnail-wrapper">
+
+                        @foreach (var image in Model.Images)
+                        {
+                            <img src="@image.ImageUrl"
+                                 class="thumbnail-image"
+                                 onclick="changeMainImage(this)"
+                                 alt="Product Image" />
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <!-- MAIN IMAGE -->
+                <div class="col-10">
+
+                    <div class="main-image-card">
+
+                        <!-- SALE BADGE -->
+                        @if (hasDiscount)
+                        {
+                            <span class="discount-badge">
+
+                                -@Model.Discount.Percentage%
+
+                            </span>
+                        }
+
+                        <img id="mainProductImage"
+                             src="@mainImage"
+                             class="main-product-image"
+                             alt="@Model.Name" />
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             RIGHT SIDE (DETAILS)
+        ========================== -->
+
+        <div class="col-lg-6">
+
+            <!-- CATEGORY -->
+            <span class="product-category">
+
+                @Model.Category?.Name
+
+            </span>
+
+
+            <!-- PRODUCT NAME -->
+            <h1 class="product-title">
+
+                @Model.Name
+
+            </h1>
+
+
+            <!-- RATING -->
+            <div class="rating-wrapper mb-4">
+
+                @{
+                    double avg =
+                    ViewBag.AverageRating;
+
+                    int fullStars =
+                    (int)Math.Floor(avg);
+                }
+
+                @for (int i = 1;
+                                i <= 5;
+                                i++)
+                {
+                    if (i <= fullStars)
+                    {
+                        <i class="bi bi-star-fill text-warning"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-star text-warning"></i>
+                    }
+                }
+
+                <span class="rating-count">
+
+                    @avg.ToString("0.0")
+
+                    (@ViewBag.TotalReviews Reviews)
+
+                </span>
+
+            </div>
+
+
+            <!-- PRICE -->
+            <div class="mb-4">
+
+                @if (hasDiscount)
+                {
+                    <div class="price-wrapper">
+
+                        <span class="old-price">
+
+                            $@Model.Price
+
+                        </span>
+
+                        <span class="new-price">
+
+                            $@finalPrice.ToString("0.00")
+
+                        </span>
+
+                    </div>
+                }
+                else
+                {
+                    <span class="new-price">
+
+                        $@Model.Price
+
+                    </span>
+                }
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+            <p class="product-description">
+
+                @Model.Description
+
+            </p>
+
+
+
+            <section class="reviews-section mt-5">
+
+                <h3 class="fw-bold mb-4">
+                    Customer Reviews
+                </h3>
+
+                <!-- REVIEW FORM -->
+
+                <div class="review-form-card mb-5">
+
+                    <h5 class="mb-3">
+                        Write a Review
+                    </h5>
+
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form asp-action="AddReview"
+                              asp-controller="User"
+                              method="post">
+
+                            <input type="hidden"
+                                   name="productId"
+                                   value="@Model.Id" />
+
+                            <!-- STAR RATING -->
+
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Rating
+                                </label>
+
+                                <div class="interactive-stars">
+
+                                    <i class="bi bi-star"
+                                       onclick="setRating(1)">
+                                    </i>
+
+                                    <i class="bi bi-star"
+                                       onclick="setRating(2)">
+                                    </i>
+
+                                    <i class="bi bi-star"
+                                       onclick="setRating(3)">
+                                    </i>
+
+                                    <i class="bi bi-star"
+                                       onclick="setRating(4)">
+                                    </i>
+
+                                    <i class="bi bi-star"
+                                       onclick="setRating(5)">
+                                    </i>
+
+                                </div>
+
+                                <input type="hidden"
+                                       id="rating"
+                                       name="rating"
+                                       required />
+                            </div>
+
+
+                            <!-- COMMENT -->
+
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Comment
+                                </label>
+
+                                <textarea class="form-control"
+                                      rows="4"
+                                      name="comment"
+                                      placeholder="Share your experience..."
+                                      required></textarea>
+
+                            </div>
+
+
+                            <button type="submit"
+                                    class="submit-review-btn">
+                                Submit Review
+
+                            </button>
+
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-light border rounded-4">
+
+                            Please
+
+                            <a asp-controller="Account"
+                               asp-action="Login">
+
+                                login
+
+                            </a>
+
+                            to write a review.
+
+                        </div>
+                    }
+
+
+                </div>
+
+
+
+                <!-- REVIEWS LIST -->
+                @if (Model.Reviews.Any())
+                {
+                    foreach (var review in Model.Reviews
+                    .OrderByDescending(r => r.CreatedAt))
+                    {
+                        <div class="review-card mb-4">
+
+                            <div class="d-flex
+                                    justify-content-between">
+
+                                <div>
+
+                                    <h6 class="fw-bold mb-1">
+                                        @review.User.FullName
+                                    </h6>
+
+                                    <small class="text-muted">
+                                        @review.CreatedAt
+                                        .ToString("MMM dd, yyyy")
+                                    </small>
+
+                                </div>
+
+
+                                <div>
+
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= review.Rating)
+                                        {
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-star text-warning"></i>
+                                        }
+                                    }
+
+                                </div>
+
+                            </div>
+
+                            <p class="mt-3 mb-0">
+                                @review.Comment
+                            </p>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">
+                        No reviews yet.
+                    </p>
+                }
+
+            </section>
+
+            <!-- STOCK -->
+            <div class="mb-4">
+
+                @if (Model.StockQuantity > 0)
+                {
+                    <span class="stock-in">
+
+                        In Stock
+                    </span>
+                }
+                else
+                {
+                    <span class="stock-out">
+
+                        Out of Stock
+                    </span>
+                }
+
+            </div>
+
+
+            <!-- QUANTITY -->
+            <div class="quantity-section mb-4">
+
+                <h6>
+                    Quantity
+                </h6>
+
+                <div class="quantity-box">
+
+                    <button onclick="decreaseQty()">
+                        -
+                    </button>
+
+                    <span id="quantityValue">
+                        1
+                    </span>
+
+                    <button onclick="increaseQty()">
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTION BUTTONS -->
+            <div class="d-flex gap-3">
+
+                <!-- ADD TO CART -->
+                @if (Model.StockQuantity > 0)
+                {
+                    <button class="btn add-cart-btn"
+                            onclick="addToCart(this)"
+                            data-product-id="@Model.Id"
+                            data-product-name="@Model.Name"
+                            data-product-price="@finalPrice"
+                            data-product-image="@mainImage">
+
+                        Add To Cart
+
+                    </button>
+                }
+                else
+                {
+                    <button class="btn add-cart-btn"
+                            disabled>
+
+                        Out Of Stock
+
+                    </button>
+                }
+
+
+                <!-- WISHLIST -->
+                <button class="wishlist-btn"
+                        data-product-id="@Model.Id"
+                        data-product-name="@Model.Name"
+                        data-product-price="@finalPrice"
+                        data-product-image="@mainImage">
+
+                    <i class="bi bi-heart"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- RELATED PRODUCTS -->
+@if (relatedProducts != null
+    && relatedProducts.Any())
+{
+    <section class="mt-5">
+
+        <h2 class="fw-bold mb-4">
+            You May Also Like
+        </h2>
+
+        <div class="row g-4">
+
+            @foreach (var item in relatedProducts)
+            {
+                var image =
+                item.Images
+                .FirstOrDefault()
+                ?.ImageUrl
+                ?? "/images/no-image.png";
+
+                bool hasItemDiscount =
+                item.Discount != null
+                && DateTime.Now >= item.Discount.StartDate
+                && DateTime.Now <= item.Discount.EndDate;
+
+                decimal itemPrice =
+                hasItemDiscount
+                ? item.Price -
+                (item.Price *
+                item.Discount.Percentage / 100)
+                : item.Price;
+
+                <div class="col-md-3">
+
+                    <div class="related-card">
+
+                        <a asp-controller="User"
+                           asp-action="ProductDetails"
+                           asp-route-id="@item.Id"
+                           class="text-decoration-none">
+
+                            <img src="@image"
+                                 class="related-image"
+                                 alt="@item.Name" />
+
+                            <div class="p-3">
+
+                                <h6 class="related-title">
+                                    @item.Name
+                                </h6>
+
+                                <p class="related-price">
+                                    $@itemPrice.ToString("0.00")
+                                </p>
+
+                            </div>
+
+                        </a>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    </section>
+}
+<script src="~/js/ProductDetails-User.js"></script>

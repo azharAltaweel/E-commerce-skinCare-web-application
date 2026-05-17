@@ -109,7 +109,56 @@ function confirmDelete(productId) {
     });
 }
 
+
+
+//when deleting a product in the table
 function updateCount() {
     let rows = document.querySelectorAll("tbody tr").length;
     document.getElementById("countPill").innerText = rows + " products";
 }
+
+
+
+
+//in product details page when click on other image for the same product 
+
+function changeMainImage(imageUrl) {
+    document.getElementById("mainImage").src = imageUrl;
+}
+
+function deleteImage(imageId) {
+    Swal.fire({
+        title: 'Delete Image?',
+        text: 'This image will be removed.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33'
+    }).then((result) => {
+
+        if (!result.isConfirmed)
+            return;
+
+        $.ajax({
+            type: "POST",
+            url: '/Admin/DeleteProductImage',
+            data: { imageId: imageId },
+
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        timer: 1200,
+                        showConfirmButton: false
+                    });
+
+                    location.reload();
+                }
+            }
+        });
+
+    });
+}
+
+
+           

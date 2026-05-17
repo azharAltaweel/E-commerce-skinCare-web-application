@@ -107,7 +107,23 @@ namespace E_commerce_Website__Skincare_.Controllers
 
             return RedirectToAction("ProductsInfo");
         }
+        public async Task<IActionResult> ProductDetails(int id)
+        {
+            var product = await _context.Products
+                .Include(p => p.Images)
+                .Include(p => p.Category)
+                .Include(p => p.Discount)
+                .Include(p => p.Reviews)
+                    .ThenInclude(r => r.User)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
         [HttpPost]
         public async Task<IActionResult> DeleteProduct(int id)
         {
@@ -259,6 +275,114 @@ namespace E_commerce_Website__Skincare_.Controllers
 
             return RedirectToAction("ProductsInfo");
         }
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteProductImage(int imageId)
+        {
+            var image = await _context.ProductImages
+                .FirstOrDefaultAsync(i => i.Id == imageId);
+
+            if (image == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Image not found"
+                });
+            }
+
+            // DELETE IMAGE FROM WWWROOT
+
+            var filePath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                image.ImageUrl.TrimStart('/'));
+
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+
+            // DELETE FROM DATABASE
+
+            _context.ProductImages.Remove(image);
+
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true,
+                message = "Image deleted successfully"
+            });
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddMoreImages(
+    int productId,
+    List<IFormFile> images)
+        {
+            var product = await _context.Products
+                .FirstOrDefaultAsync(p => p.Id == productId);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            if (images != null && images.Count > 0)
+            {
+                foreach (var image in images)
+                {
+                    // UNIQUE NAME
+
+                    var fileName = Guid.NewGuid().ToString()
+                                   + Path.GetExtension(image.FileName);
+
+                    // PATH
+
+                    var path = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot/images/products",
+                        fileName);
+
+                    // SAVE IMAGE
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+
+                    // SAVE TO DATABASE
+
+                    ProductImage productImage = new ProductImage
+                    {
+                        ImageUrl = "/images/products/" + fileName,
+                        ProductId = productId
+                    };
+
+                    _context.ProductImages.Add(productImage);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("ProductDetails", new { id = productId });
+        }
+
+
+
+
+
+
+
+
+
+
 
 
 
