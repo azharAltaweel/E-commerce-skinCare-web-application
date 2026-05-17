@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -18,6 +18,7 @@
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="~/css/UserLayout.css"
           rel="stylesheet" />
+    @RenderSection("Styles", required: false)
 </head>
 
 <body>
@@ -113,6 +114,12 @@
 
                         </a>
                     }
+                    <span class="material-symbols-outlined cursor-pointer">favorite</span>
+                    <a asp-controller="Cart" asp-action="Index" class="cart-link">
+                        <span class="material-symbols-outlined cursor-pointer">shopping_bag</span>
+                        <span class="cart-badge" style="display: none;">0</span>
+                    </a>
+                    <span class="material-symbols-outlined cursor-pointer">person</span>
                 </div>
 
             </div>

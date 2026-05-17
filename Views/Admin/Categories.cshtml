@@ -113,52 +113,30 @@
             </div>
 
             <!-- Form -->
-            <form asp-action="AddCategory" method="post">
-
+            <form asp-action="AddCategory" method="post" enctype="multipart/form-data">
                 <div class="modal-body">
 
-                    <!-- Category Name -->
                     <div class="mb-3">
                         <label class="form-label">Category Name</label>
-
-                        <input type="text"
-                               name="Name"
-                               class="form-control"
-                               placeholder="Enter category name"
-                               required>
+                        <input type="text" name="Name" class="form-control" placeholder="Enter category name" required>
                     </div>
 
-                    <!-- Image URL -->
                     <div class="mb-3">
-                        <label class="form-label">Image URL</label>
-
+                        <label class="form-label">Category Image</label>
                         <input type="file"
-                               name="ImageUrl"
+                               name="categoryImageFile"
+                               accept="image/*"
                                class="form-control"
-                               placeholder="Enter image url"
                                required>
                     </div>
 
                 </div>
 
-                <!-- Footer -->
                 <div class="modal-footer">
-
-                    <button type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal">
-                        Close
-                    </button>
-
-                    <button type="submit"
-                            class="btn btn-success">
-                        Save Category
-                    </button>
-
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Save Category</button>
                 </div>
-
             </form>
-
         </div>
     </div>
 </div>
@@ -180,57 +158,48 @@
             </div>
 
             <!-- Form -->
-            <form asp-action="EditCategory" method="post">
+            <form asp-action="EditCategory" method="post" enctype="multipart/form-data">
 
                 <div class="modal-body">
 
-                    <!-- Hidden ID -->
-                    <input type="hidden"
-                           id="editId"
-                           name="Id" />
+                    <div id="idDisplayGroup" style="display: none;" class="mb-3">
+                        <label class="form-label">Category ID</label>
+                        <input type="text" id="displayId" class="form-control" readonly />
+                    </div>
 
-                    <!-- Name -->
+                    <input type="hidden" id="fieldId" name="Id" />
+
                     <div class="mb-3">
                         <label class="form-label">Category Name</label>
-
                         <input type="text"
-                               id="editName"
+                               id="fieldName"
                                name="Name"
                                class="form-control"
                                required>
                     </div>
 
-                    <!-- Image URL -->
                     <div class="mb-3">
-                        <label class="form-label">Image URL</label>
+                        <label class="form-label">Category Image</label>
 
-                        <input type="text"
-                               id="editImage"
-                               name="ImageUrl"
-                               class="form-control"
-                               required>
+                        <input type="file"
+                               id="fieldUrl"
+                               name="categoryImageFile"
+                               accept="image/*"
+                               class="form-control">
+
+                        <small class="text-muted">Leave blank if you don't want to change the current image.</small>
                     </div>
 
                 </div>
 
-                <!-- Footer -->
                 <div class="modal-footer">
-
-                    <button type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal">
-                        Close
-                    </button>
-
-                    <button type="submit"
-                            class="btn btn-primary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" id="submitBtn" class="btn btn-primary">
                         Save Changes
                     </button>
-
                 </div>
 
             </form>
-
         </div>
     </div>
 </div>

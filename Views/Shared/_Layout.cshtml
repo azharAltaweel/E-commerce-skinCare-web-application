@@ -1,32 +1,76 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - E_commerce_Website__Skincare_</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/E_commerce_Website__Skincare_.styles.css" asp-append-version="true" />
+    
+    <style>
+        .brand-text {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #635f40;
+            letter-spacing: 1px;
+        }
+        .cursor-pointer { cursor: pointer; }
+        .cart-link { position: relative; color: inherit; text-decoration: none; }
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background: #635f40;
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">E_commerce_Website__Skincare_</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm fixed-top py-3">
+            <div class="container">
+                <a class="navbar-brand brand-text fs-3" asp-area="" asp-controller="Home" asp-action="Index">GLOWCARE</a>
+                
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="material-symbols-outlined">menu</span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                        <li class="nav-item px-2">
+                            <a class="nav-link text-dark fw-medium" asp-area="" asp-controller="Home" asp-action="Index">Shop All</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li class="nav-item px-2">
+                            <a class="nav-link text-dark fw-medium" href="#">Serums</a>
+                        </li>
+                        <li class="nav-item px-2">
+                            <a class="nav-link text-dark fw-medium" href="#">Cleansers</a>
                         </li>
                     </ul>
-                    <partial name="_LoginPartial" />
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="material-symbols-outlined cursor-pointer">search</span>
+                        <span class="material-symbols-outlined cursor-pointer">favorite</span>
+                        <a asp-controller="Cart" asp-action="Index" class="cart-link">
+                            <span class="material-symbols-outlined cursor-pointer">shopping_bag</span>
+                            <span class="cart-badge" style="display: none;">0</span>
+                        </a>
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
             </div>
         </nav>

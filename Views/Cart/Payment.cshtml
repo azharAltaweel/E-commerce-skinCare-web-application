@@ -1,0 +1,136 @@
+@{
+    ViewData["Title"] = "Payment - GlowCare";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/payment.css" asp-append-version="true" />
+}
+
+<div class="container payment-container mt-5">
+    <!-- Progress Steps -->
+    <div class="row mb-5 justify-content-center">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between align-items-center position-relative">
+                <div class="text-center z-1">
+                    <div class="step inactive-step">1</div>
+                    <span class="progress-label">Shipping</span>
+                </div>
+                <div class="text-center z-1">
+                    <div class="step active-step">2</div>
+                    <span class="progress-label">Payment</span>
+                </div>
+                <div class="text-center z-1">
+                    <div class="step inactive-step">3</div>
+                    <span class="progress-label">Review</span>
+                </div>
+                <div class="position-absolute top-50 start-0 end-0 translate-middle-y border-bottom" style="height: 1px; z-index: 0; margin-top: -12px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-5">
+        <!-- Payment Details -->
+        <div class="col-lg-7">
+            <h4 class="mb-4 brand-text">
+                <span class="material-symbols-outlined align-middle me-2">payments</span>
+                Payment Details
+            </h4>
+
+            <div class="mb-4">
+                <div class="form-check payment-option p-3 rounded mb-3 shadow-sm">
+                    <input class="form-check-input ms-0 me-3" type="radio" name="paymentMethod" id="card" checked>
+                    <label class="form-check-label fw-bold w-100" for="card">
+                        Credit / Debit Card
+                        <div class="float-end">
+                            <i class="bi bi-credit-card fs-5"></i>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="form-check payment-option p-3 rounded shadow-sm">
+                    <input class="form-check-input ms-0 me-3" type="radio" name="paymentMethod" id="cod">
+                    <label class="form-check-label fw-bold w-100" for="cod">
+                        Cash on Delivery
+                        <div class="float-end">
+                            <i class="bi bi-truck fs-5"></i>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Card Entry Section -->
+            <div id="card-section" class="mt-4">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Card Number</label>
+                        <div id="card-number-dummy" class="form-control text-muted">
+                            <i class="bi bi-credit-card me-2"></i>
+                            Stripe Elements will load here...
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Expiry Date</label>
+                        <input type="text" class="form-control" placeholder="MM/YY">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">CVV</label>
+                        <input type="text" class="form-control" placeholder="123">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Cardholder Name</label>
+                        <input type="text" class="form-control" placeholder="John Doe">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-muted small d-flex align-items-center gap-2">
+                <span class="material-symbols-outlined fs-6">lock</span>
+                Secure payment with SSL encryption. Your data is protected.
+            </div>
+        </div>
+
+        <!-- Summary Sidebar -->
+        <div class="col-lg-5">
+            <div class="card summary-box p-4 border-0">
+                <h5 class="mb-4 brand-text">Order Summary</h5>
+                
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Subtotal</span>
+                    <span id="payment-subtotal" class="fw-medium">$0.00</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Shipping</span>
+                    <span id="payment-shipping" class="fw-medium">$0.00</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Estimated Tax</span>
+                    <span id="payment-tax" class="fw-medium">$0.00</span>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="h5 brand-text mb-0">Total</span>
+                    <span id="payment-total" class="h5 brand-text mb-0 text-primary-custom">$0.00</span>
+                </div>
+
+                <button type="button" class="complete-btn w-100" onclick="handleCompleteOrder()">
+                    Complete Order
+                    <span class="material-symbols-outlined align-middle ms-2">check_circle</span>
+                </button>
+                
+                <div class="mt-4 text-center">
+                    <a asp-controller="Cart" asp-action="Checkout" class="text-muted text-decoration-none small">
+                        <span class="material-symbols-outlined align-middle fs-6">arrow_back</span>
+                        Back to Shipping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="~/js/payment.js" asp-append-version="true"></script>
+}

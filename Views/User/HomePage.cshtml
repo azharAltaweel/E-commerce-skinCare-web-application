@@ -1,0 +1,251 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+}
+@model IEnumerable<E_commerce_Website__Skincare_.Models.Product>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&amp;family=Jost:wght@300;400;500&amp;display=swap" rel="stylesheet">
+<link href="~/css/HomePage.css" rel="stylesheet" >
+<main class="container py-5" style="max-width:1140px;">
+
+    <!-- ══ HERO ══ -->
+    <section class="gap-section">
+        <div class="hero-wrap">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9Nxsztf-lnAvCjAK_C0C1JSq8-b7g0HuM_3xoMVR3NKjlLkKObKTfeKhlMqeHTI85Pu8gKA8WmvoEfme0Co5PsGoSdvpg6nRwnHkUnnPOm4SVGc1D7CzhmCc42b4ahmMA8X0pK8vR7VXFsJCK_4JGhghFEX_XHw0ndQMbCYDZCsJ1ctBLmFZVNkZkH7_ioIJxkG1LWgIfIxh-2XHHuVg6Zvuu6JHSsCISz7oslDpujklkQN5b_IG59jYnVGoQT7rN5B43585TblE" alt="Hero">
+            <div class="hero-overlay">
+                <div>
+                    <span class="label-caps d-block mb-3" style="color:var(--sage);">New Collection</span>
+                    <h1>Reveal Your<br>Inner Radiance</h1>
+                    <p>Experience the ritual of intentional beauty with our ethically sourced, clinical-grade serums and cleansers.</p>
+                    <a href="#" class="btn-primary-glow">Shop Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ CURATED ESSENTIALS ══ -->
+    <section class="gap-section">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h2 class="section-heading mb-1">Curated Essentials</h2>
+                <p class="mb-0" style="font-size:.88rem; color:var(--muted);">Recommended for your daily ritual</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var product in Model)
+                {
+                    <div class="col-6 col-lg-3">
+                        <div class="product-card h-100">
+                            <div class="product-img-wrap">
+                                @* Safely grab the first image from the ordered collection, or use a placeholder if empty *@
+                                @{
+                                    var firstImage = product.Images?.OrderBy(img => img.Id).FirstOrDefault()?.ImageUrl
+                                    ?? "https://via.placeholder.com/150";
+                                }
+                                <img src="@firstImage" alt="@product.Name" class="img-fluid">
+                            </div>
+                            <div class="text-center">
+                                <p class="product-name">@product.Name</p>
+
+                                @* Safe null-conditional operator (?) prevents crashes if Category is missing *@
+                                <p class="product-sub">@(product.Category?.Name ?? "General")</p>
+
+                                <p class="product-price">@product.Price.ToString("C")</p>
+
+                                <form asp-controller="Product" asp-action="AddToCart" method="post">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button type="submit" class="btn btn-link product-price p-0 border-0 bg-transparent text-decoration-none">
+                                        Add to cart
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">No products available at the moment.</p>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- ══ RITUAL CATEGORIES ══ -->
+    <section class="gap-section category-section rounded-4 py-5">
+        <h2 class="section-heading text-center mb-5">Ritual Categories</h2>
+        <div class="row g-4 justify-content-center">
+
+            @if (ViewBag.Categories != null)
+            {
+                foreach (var category in ViewBag.Categories)
+                {
+                    <div class="col-6 col-md-3 text-center">
+                        @* Update asp-route-id to match your filtering setup if you have one *@
+                        <a asp-controller="Product" asp-action="Category" asp-route-id="@category.Id" class="cat-link">
+                            <div class="cat-circle-outer">
+                                <div class="cat-circle-inner">
+                                    @* Fallback to a placeholder if the category image is missing *@
+                                    <img src="@(category.ImageUrl ?? "https://via.placeholder.com/150")" alt="@category.Name">
+                                </div>
+                            </div>
+                            <span class="cat-name">@category.Name</span>
+                        </a>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-center text-muted">No categories found.</p>
+            }
+
+        </div>
+    </section>
+
+
+    <!-- ══ DISCOUNT BANNER ══ -->
+    <section class="gap-section discount-section rounded-4 py-5">
+        <h2 class="section-heading text-center mb-5">Exclusive Offers & Discounts</h2>
+        <div class="row g-4 justify-content-center">
+
+            @if (ViewBag.DiscountProducts != null)
+            {
+                foreach (var discountItem in ViewBag.DiscountProducts)
+                {
+                    //  Cast the dynamic list item to your concrete Discount model type
+                    var discount = discountItem as E_commerce_Website__Skincare_.Models.Discount;
+
+                    // Grab the first product safely from the typed model
+                    var targetedProduct = discount?.Products?.FirstOrDefault();
+
+                    if (targetedProduct != null)
+                    {
+                        // Fix 2: Cast the collection of images explicitly so the OrderBy LINQ lambda works perfectly
+                        var productImages = targetedProduct.Images as IEnumerable<E_commerce_Website__Skincare_.Models.ProductImage>;
+
+                        var discountProductImage = productImages?.OrderBy(img => img.Id).FirstOrDefault()?.ImageUrl
+                        ?? "https://via.placeholder.com/150";
+
+                        <div class="col-6 col-md-3 text-center">
+                            <a asp-controller="Product" asp-action="Details" asp-route-id="@targetedProduct.Id" class="cat-link">
+                                <div class="cat-circle-outer position-relative">
+
+                                    @* Visual badge displaying the percentage value *@
+                                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">
+                                        -@discount.Percentage%
+                                    </span>
+
+                                    <div class="cat-circle-inner">
+                                        <img src="@discountProductImage" alt="@targetedProduct.Name">
+                                    </div>
+                                </div>
+
+                                <div class="mt-2">
+                                    <span class="cat-name d-block fw-bold">@targetedProduct.Name</span>
+                                    <span class="text-muted small d-block text-truncate">@discount.Title</span>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <p class="text-muted">No promotional deals are running right now.</p>
+                </div>
+            }
+
+        </div>
+    </section>    
+    
+    <!-- ══ TESTIMONIALS ══ -->
+
+    <section class="gap-section">
+        <h2 class="section-heading text-center mb-5">Voices of Glow</h2>
+        <div class="row g-3">
+
+            @if (ViewBag.Testimonials != null && ((IEnumerable<dynamic>)ViewBag.Testimonials).Any())
+            {
+                foreach (var item in ViewBag.Testimonials)
+                {
+                    // Cast the dynamic dynamic object into your concrete Testimonial model structure
+                    var testimonial = item as E_commerce_Website__Skincare_.Models.Testimonial;
+
+                    if (testimonial != null)
+                    {
+                        @* Fallback name logic: Uses user's email or username property if Name doesn't exist *@
+                        var reviewerName = testimonial.User?.UserName ?? "Valued Customer";
+
+                        <div class="col-12 col-md-4">
+                            <div class="testimonial-card h-100">
+                                <p class="testimonial-text">"@testimonial.Content"</p>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="avatar">
+                                        @* Using a clean default user profile icon setup *@
+                                        <img src="https://ui-avatars.com/api/?name=@(reviewerName)&background=random" alt="@reviewerName">
+                                    </div>
+                                    <div>
+                                        <p class="reviewer-name mb-0">@reviewerName</p>
+                                        <p class="reviewer-badge mb-0">Verified Purchase</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-4">
+                    <p class="text-muted">No testimonials available yet.</p>
+                </div>
+            }
+
+        </div>
+    </section>
+    <!-- ══ NEWSLETTER ══ -->
+    <section class="gap-section">
+        <div class="newsletter-wrap text-center mx-auto" style="max-width:680px;">
+            <h2>Share Your Glow Experience</h2>
+            <p>We'd love to hear your thoughts! Submit your testimonial below. Once approved by our team, it will appear live on our page.</p>
+
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <form asp-controller="Home" asp-action="SubmitTestimonial" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="d-flex flex-column gap-3 align-items-center">
+                        <textarea name="content"
+                              class="form-control text-center p-3 rounded-3"
+                              rows="3"
+                              placeholder="Write your skin journey or opinion here..."
+                              style="border: 1px solid var(--muted-color, #ccc); background-color: transparent; resize: none;"
+                              required></textarea>
+
+                        <button type="submit" class="btn-primary-glow px-4" style="white-space:nowrap;">
+                            Submit Opinion
+                        </button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="py-3">
+                    <p class="text-muted small mb-3">You must be logged in to share your experience.</p>
+                    <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path" class="btn-primary-glow text-decoration-none d-inline-block px-4">
+                        Login to Review
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+
+</main>

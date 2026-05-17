@@ -1,0 +1,145 @@
+@{
+    ViewData["Title"] = "Checkout - GlowCare";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
+}
+
+<div class="container checkout-container mt-5">
+    <!-- Progress Steps -->
+    <div class="row mb-5 justify-content-center">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between align-items-center position-relative">
+                <div class="text-center z-1">
+                    <div class="step active">1</div>
+                    <span class="progress-label">Shipping</span>
+                </div>
+                <div class="text-center z-1">
+                    <div class="step inactive">2</div>
+                    <span class="progress-label">Payment</span>
+                </div>
+                <div class="text-center z-1">
+                    <div class="step inactive">3</div>
+                    <span class="progress-label">Review</span>
+                </div>
+                <!-- Connecting Line -->
+                <div class="position-absolute top-50 start-0 end-0 translate-middle-y border-bottom" style="height: 1px; z-index: 0; margin-top: -12px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-5">
+        <!-- Shipping Details Form -->
+        <div class="col-lg-7">
+            <h4 class="mb-4 brand-text">
+                <span class="material-symbols-outlined align-middle me-2">local_shipping</span>
+                Shipping Details
+            </h4>
+
+            <form id="checkout-form">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control" placeholder="Elena" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" placeholder="Vance" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Address</label>
+                        <input type="text" class="form-control" placeholder="123 Street, Apt 4B" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-control" placeholder="New York" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Postal Code</label>
+                        <input type="text" class="form-control" placeholder="10001" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" placeholder="+1 (555) 000-0000">
+                    </div>
+                </div>
+
+                <h5 class="mt-5 mb-3 brand-text">Delivery Method</h5>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="form-check delivery-option p-3 rounded mb-2">
+                            <input class="form-check-input ms-0 me-3" type="radio" name="shippingMethod" id="standard" value="0" checked onchange="updateTotal()">
+                            <label class="form-check-label w-100" for="standard">
+                                <div class="d-flex justify-content-between">
+                                    <span>Standard Shipping</span>
+                                    <span class="text-success fw-bold">Free</span>
+                                </div>
+                                <small class="text-muted">3-5 business days</small>
+                            </label>
+                        </div>
+                        <div class="form-check delivery-option p-3 rounded">
+                            <input class="form-check-input ms-0 me-3" type="radio" name="shippingMethod" id="express" value="15" onchange="updateTotal()">
+                            <label class="form-check-label w-100" for="express">
+                                <div class="d-flex justify-content-between">
+                                    <span>Express Delivery</span>
+                                    <span class="fw-bold">$15.00</span>
+                                </div>
+                                <small class="text-muted">1-2 business days</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div class="col-lg-5">
+            <div class="card summary-box p-4 border-0">
+                <h5 class="mb-4 brand-text">Order Summary</h5>
+                
+                <div id="checkout-items-list">
+                    <!-- Items will be injected here -->
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Subtotal</span>
+                    <span id="summary-subtotal" class="fw-medium">$0.00</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Shipping</span>
+                    <span id="summary-shipping" class="text-success fw-medium">Free</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Estimated Tax</span>
+                    <span id="summary-tax" class="fw-medium">$0.00</span>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="h5 brand-text mb-0">Total</span>
+                    <span id="summary-total" class="h5 brand-text mb-0 text-primary-custom">$0.00</span>
+                </div>
+
+                <button type="button" class="checkout-btn w-100" onclick="handleContinueToPayment()">
+                    Continue to Payment
+                    <span class="material-symbols-outlined align-middle ms-2">arrow_forward</span>
+                </button>
+                
+                <div class="mt-4 text-center">
+                    <a asp-controller="Cart" asp-action="Index" class="text-muted text-decoration-none small">
+                        <span class="material-symbols-outlined align-middle fs-6">arrow_back</span>
+                        Back to Cart
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/checkout.js" asp-append-version="true"></script>
+}

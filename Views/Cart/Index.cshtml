@@ -1,0 +1,77 @@
+@{
+    ViewData["Title"] = "Your Ritual Cart";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/cart.css" asp-append-version="true" />
+}
+
+<div class="container cart-container">
+    <h2 class="cart-title animate-fade-in">Your Ritual Cart</h2>
+
+    <div class="row">
+        <!-- Cart Items List -->
+        <div class="col-lg-8" id="cart-items">
+            <!-- Items will be injected here by JS -->
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary-custom" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Sidebar -->
+        <div class="col-lg-4">
+            <div class="summary-card animate-fade-in" style="animation-delay: 0.2s">
+                <h5 class="summary-title">Order Summary</h5>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <strong id="cart-subtotal">$0.00</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <strong class="text-success">Free</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Estimated Tax</span>
+                    <strong id="cart-tax">$0.00</strong>
+                </div>
+
+                <div class="summary-row" id="discount-row" style="display: none;">
+                    <span class="text-success">Discount</span>
+                    <strong id="discount-val" class="text-success">-$0.00</strong>
+                </div>
+
+                <div class="summary-total">
+                    <div class="d-flex justify-content-between">
+                        <span>Total</span>
+                        <span id="cart-total">$0.00</span>
+                    </div>
+                </div>
+
+                <div class="coupon-section">
+                    <input type="text" class="form-control coupon-input" placeholder="Promo Code">
+                    <button class="btn coupon-btn" onclick="applyPromoCode()">Apply</button>
+                </div>
+
+                <button class="checkout-btn" onclick="proceedToCheckout()">
+                    Proceed to Checkout
+                </button>
+
+                <div class="mt-4 text-center">
+                    <small class="text-muted">
+                        <span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle;">lock</span>
+                        Secure SSL Checkout
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/cart.js" asp-append-version="true"></script>
+}

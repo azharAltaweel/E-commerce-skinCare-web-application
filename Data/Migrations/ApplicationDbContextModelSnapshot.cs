@@ -114,7 +114,7 @@ namespace E_commerce_Website__Skincare_.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("E_commerce_Website__Skincare_.Models.Category", b =>
@@ -136,7 +136,7 @@ namespace E_commerce_Website__Skincare_.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("E_commerce_Website__Skincare_.Models.Discount", b =>
@@ -162,7 +162,7 @@ namespace E_commerce_Website__Skincare_.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Discounts");
+                    b.ToTable("Discounts", (string)null);
                 });
 
             modelBuilder.Entity("E_commerce_Website__Skincare_.Models.Order", b =>
@@ -191,7 +191,7 @@ namespace E_commerce_Website__Skincare_.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("E_commerce_Website__Skincare_.Models.OrderItem", b =>
@@ -220,7 +220,7 @@ namespace E_commerce_Website__Skincare_.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("E_commerce_Website__Skincare_.Models.Payment", b =>
@@ -249,7 +249,7 @@ namespace E_commerce_Website__Skincare_.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("E_commerce_Website__Skincare_.Models.Product", b =>
@@ -287,7 +287,7 @@ namespace E_commerce_Website__Skincare_.Migrations
 
                     b.HasIndex("DiscountId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("E_commerce_Website__Skincare_.Models.ProductImage", b =>
@@ -309,7 +309,7 @@ namespace E_commerce_Website__Skincare_.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("E_commerce_Website__Skincare_.Models.Review", b =>
@@ -346,7 +346,7 @@ namespace E_commerce_Website__Skincare_.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("E_commerce_Website__Skincare_.Models.Testimonial", b =>
@@ -372,7 +372,7 @@ namespace E_commerce_Website__Skincare_.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Testimonials");
+                    b.ToTable("Testimonials", (string)null);
                 });
 
             modelBuilder.Entity("E_commerce_Website__Skincare_.Models.Wishlist", b =>
@@ -396,7 +396,7 @@ namespace E_commerce_Website__Skincare_.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Wishlists");
+                    b.ToTable("Wishlists", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

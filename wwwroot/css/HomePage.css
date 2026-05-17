@@ -1,0 +1,420 @@
+﻿:root {
+    --cream: #f5f1eb;
+    --warm-white: #faf8f4;
+    --sand: #e8e0d0;
+    --sage: #7a8c72;
+    --dark: #2a2519;
+    --muted: #7a7265;
+    --primary: #4a5240;
+    --card-bg: #ffffff;
+    --radius: 14px;
+    --shadow: 0 4px 24px rgba(42,37,25,.07);
+    --shadow-hover: 0 14px 44px rgba(42,37,25,.14);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--cream);
+    font-family: 'Jost', sans-serif;
+    color: var(--dark);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── TYPOGRAPHY ── */
+.label-caps {
+    font-size: .65rem;
+    font-weight: 500;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+}
+
+.serif {
+    font-family: 'Cormorant Garamond', serif;
+}
+
+/* ── HERO ── */
+.hero-wrap {
+    position: relative;
+    height: 560px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+    .hero-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(245,241,235,.55) 0%, transparent 65%);
+    display: flex;
+    align-items: center;
+    padding: 3rem 3.5rem;
+}
+
+    .hero-overlay h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 300;
+        font-size: clamp(2.4rem, 5vw, 4rem);
+        line-height: 1.1;
+        color: var(--dark);
+        margin-bottom: 1.2rem;
+    }
+
+    .hero-overlay p {
+        font-size: .95rem;
+        color: var(--muted);
+        line-height: 1.75;
+        margin-bottom: 2rem;
+        max-width: 420px;
+    }
+
+.btn-primary-glow {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: .85rem 2.2rem;
+    border-radius: 10px;
+    font-size: .65rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    font-family: 'Jost', sans-serif;
+    cursor: pointer;
+    transition: opacity .25s, transform .25s;
+    display: inline-block;
+    text-decoration: none;
+}
+
+    .btn-primary-glow:hover {
+        opacity: .88;
+        transform: translateY(-2px);
+        color: #fff;
+    }
+
+/* ── SECTION HEADINGS ── */
+.section-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    color: var(--dark);
+}
+
+.view-all-link {
+    font-size: .65rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--primary);
+    text-decoration: none;
+    border-bottom: 1px solid var(--primary);
+    padding-bottom: 2px;
+    font-family: 'Jost', sans-serif;
+}
+
+/* ── PRODUCT CARDS ── */
+.product-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    transition: box-shadow .35s, transform .35s;
+}
+
+    .product-card:hover {
+        box-shadow: var(--shadow-hover);
+        transform: translateY(-4px);
+    }
+
+.product-img-wrap {
+    aspect-ratio: 4/5;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f0ece5;
+    position: relative;
+    margin-bottom: 1.2rem;
+}
+
+    .product-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform .6s cubic-bezier(.22,1,.36,1);
+    }
+
+.product-card:hover .product-img-wrap img {
+    transform: scale(1.06);
+}
+
+.badge-new, .badge-best {
+    position: absolute;
+    top: .85rem;
+    left: .85rem;
+    font-size: .6rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    padding: .3rem .75rem;
+    border-radius: 2rem;
+    font-family: 'Jost', sans-serif;
+    font-weight: 500;
+}
+
+.badge-new {
+    background: #dde5d8;
+    color: var(--primary);
+}
+
+.badge-best {
+    background: var(--primary);
+    color: #fff;
+}
+
+.product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--dark);
+    margin-bottom: .2rem;
+}
+
+.product-sub {
+    font-size: .8rem;
+    color: var(--muted);
+    margin-bottom: .5rem;
+}
+
+.product-price {
+    font-size: .95rem;
+    font-weight: 500;
+    color: var(--primary);
+}
+
+/* ── CATEGORY CIRCLES ── */
+.category-section {
+    background: #ede9e1;
+    padding: 4rem 0;
+}
+
+.cat-circle-outer {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    padding: 6px;
+    margin: 0 auto 1rem;
+    transition: border-color .3s;
+    overflow: hidden;
+}
+
+.cat-link:hover .cat-circle-outer {
+    border-color: var(--primary);
+}
+
+.cat-circle-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+    .cat-circle-inner img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform .5s;
+    }
+
+.cat-link:hover .cat-circle-inner img {
+    transform: scale(1.1);
+}
+
+.cat-name {
+    font-size: .68rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--dark);
+    font-family: 'Jost', sans-serif;
+}
+
+.cat-link {
+    text-decoration: none;
+    display: block;
+}
+
+/* ── BANNER ── */
+.banner-wrap {
+    position: relative;
+    height: 380px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #c8cfc0;
+}
+
+    .banner-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        mix-blend-mode: multiply;
+        opacity: .45;
+    }
+
+.banner-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+    .banner-content h2 {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 300;
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        color: var(--dark);
+        margin-bottom: 1rem;
+    }
+
+    .banner-content p {
+        font-size: .9rem;
+        color: var(--dark);
+        opacity: .8;
+        max-width: 520px;
+        margin-bottom: 2rem;
+    }
+
+.btn-outline-glow {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: .85rem 2.2rem;
+    border-radius: 10px;
+    font-size: .65rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    font-family: 'Jost', sans-serif;
+    cursor: pointer;
+    transition: background .25s, color .25s;
+}
+
+    .btn-outline-glow:hover {
+        background: var(--primary);
+        color: #fff;
+    }
+
+/* ── TESTIMONIALS ── */
+.testimonial-card {
+    background: #ede9e1;
+    border-radius: 18px;
+    padding: 2.2rem;
+}
+
+.stars {
+    color: var(--primary);
+    letter-spacing: .1em;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.testimonial-text {
+    font-style: italic;
+    font-size: .9rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+}
+
+.avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+    .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.reviewer-name {
+    font-size: .88rem;
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.reviewer-badge {
+    font-size: .62rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* ── NEWSLETTER ── */
+.newsletter-wrap {
+    background: #e8e4db;
+    border-radius: 24px;
+    padding: 4rem 3rem;
+    border: 1px solid rgba(42,37,25,.08);
+}
+
+    .newsletter-wrap h2 {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 400;
+        font-size: 2rem;
+        margin-bottom: .75rem;
+    }
+
+    .newsletter-wrap p {
+        font-size: .9rem;
+        color: var(--muted);
+        margin-bottom: 2rem;
+    }
+
+.email-input {
+    border: 1px solid #cbc5ba;
+    border-radius: 10px;
+    background: var(--card-bg);
+    padding: .85rem 1.25rem;
+    font-size: .9rem;
+    font-family: 'Jost', sans-serif;
+    outline: none;
+    flex: 1;
+    color: var(--dark);
+}
+
+    .email-input:focus {
+        border-color: var(--primary);
+    }
+
+/* gaps */
+.gap-section {
+    margin-bottom: 5rem;
+}
+
+/* Keeps the cards uniformly sized with the button sitting perfectly at the bottom */
+.product-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Custom styling for your new button to match a modern aesthetic */
+.btn-outline-dark {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-outline-dark:hover {
+        background-color: #222;
+        color: #fff;
+    }

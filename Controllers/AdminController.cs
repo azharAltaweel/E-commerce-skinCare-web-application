@@ -1,10 +1,12 @@
 ﻿using E_commerce_Website__Skincare_.Data;
 using E_commerce_Website__Skincare_.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace E_commerce_Website__Skincare_.Controllers
 {
@@ -13,7 +15,7 @@ namespace E_commerce_Website__Skincare_.Controllers
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ApplicationDbContext _context;
 
         public AdminController(
@@ -563,10 +565,35 @@ namespace E_commerce_Website__Skincare_.Controllers
 
         // POST: /Admin/AddCategory
         [HttpPost]
-        public async Task<IActionResult> AddCategory(Category category)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCategory(Category category, IFormFile categoryImageFile)
         {
-            _context.Categories.Add(category);
+            if (categoryImageFile != null && categoryImageFile.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(categoryImageFile.FileName);
 
+                var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "categories");
+
+                if (!Directory.Exists(uploadDir))
+                {
+                    Directory.CreateDirectory(uploadDir);
+                }
+
+                var fullPath = Path.Combine(uploadDir, fileName);
+
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await categoryImageFile.CopyToAsync(stream);
+                }
+
+                category.ImageUrl = "/images/categories/" + fileName;
+            }
+            else
+            {
+                category.ImageUrl = "/images/categories/default-placeholder.png";
+            }
+
+            _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Categories");
@@ -574,10 +601,12 @@ namespace E_commerce_Website__Skincare_.Controllers
 
         // POST: /Admin/EditCategory
         [HttpPost]
-        public async Task<IActionResult> EditCategory(Category category)
+        // POST: /Admin/EditCategory
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCategory(Category category, IFormFile? categoryImageFile)
         {
-            var existingCategory = await _context.Categories
-                .FindAsync(category.Id);
+            var existingCategory = await _context.Categories.FindAsync(category.Id);
 
             if (existingCategory == null)
             {
@@ -585,13 +614,42 @@ namespace E_commerce_Website__Skincare_.Controllers
             }
 
             existingCategory.Name = category.Name;
-            existingCategory.ImageUrl = category.ImageUrl;
 
+            if (categoryImageFile != null && categoryImageFile.Length > 0)
+            {
+                if (!string.IsNullOrEmpty(existingCategory.ImageUrl) &&
+                    !existingCategory.ImageUrl.Contains("default-placeholder.png"))
+                {
+                    var oldFullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", existingCategory.ImageUrl.TrimStart('/'));
+
+                    if (System.IO.File.Exists(oldFullPath))
+                    {
+                        System.IO.File.Delete(oldFullPath);
+                    }
+                }
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(categoryImageFile.FileName);
+                var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "categories");
+
+                if (!Directory.Exists(uploadDir))
+                {
+                    Directory.CreateDirectory(uploadDir);
+                }
+
+                var newFullPath = Path.Combine(uploadDir, fileName);
+
+                using (var stream = new FileStream(newFullPath, FileMode.Create))
+                {
+                    await categoryImageFile.CopyToAsync(stream);
+                }
+
+                existingCategory.ImageUrl = "/images/categories/" + fileName;
+            }
+            
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Categories");
         }
-
         // POST: /Admin/DeleteCategory
         [HttpPost]
         public async Task<IActionResult> DeleteCategory(int id)

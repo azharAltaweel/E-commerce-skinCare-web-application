@@ -1,0 +1,231 @@
+:root {
+    --primary-color: #635f40;
+    --primary-soft: #f7f3ee;
+    --bg-color: #fdf9f4;
+    --border-color: #e6e2dd;
+    --text-muted: #888;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    --transition: all 0.3s ease;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: #333;
+}
+
+.cart-container {
+    padding-top: 40px;
+    padding-bottom: 80px;
+}
+
+.cart-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+}
+
+.cart-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.cart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.cart-item-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.item-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+    color: #222;
+}
+
+.item-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.qty-control {
+    display: flex;
+    align-items: center;
+    background: var(--primary-soft);
+    border-radius: 100px;
+    padding: 4px;
+    width: fit-content;
+}
+
+.qty-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: bold;
+}
+
+.qty-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 12px rgba(99, 95, 64, 0.2);
+}
+
+.qty-val {
+    margin: 0 15px;
+    font-weight: 600;
+    min-width: 20px;
+    text-align: center;
+}
+
+.price-text {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.remove-btn {
+    color: #ff5e5e;
+    font-size: 0.85rem;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.remove-btn:hover {
+    color: #d43f3f;
+    text-decoration: underline;
+}
+
+/* Summary Section */
+.summary-card {
+    position: sticky;
+    top: 100px;
+    background: rgba(247, 243, 238, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(230, 226, 221, 0.5);
+    border-radius: 30px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+}
+
+.summary-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.summary-total {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.checkout-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 100px;
+    font-weight: 600;
+    margin-top: 2rem;
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.checkout-btn:hover {
+    background: #4a4730;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(99, 95, 64, 0.3);
+}
+
+.coupon-section {
+    display: flex;
+    gap: 10px;
+    margin-top: 1.5rem;
+}
+
+.coupon-input {
+    border-radius: 100px;
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1.2rem;
+    flex-grow: 1;
+}
+
+.coupon-btn {
+    border-radius: 100px;
+    padding: 0.5rem 1.5rem;
+    background: white;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* Empty State */
+.empty-cart {
+    text-align: center;
+    padding: 80px 0;
+}
+
+.empty-cart i {
+    font-size: 4rem;
+    color: var(--border-color);
+    margin-bottom: 1.5rem;
+}
+
+.continue-shopping {
+    margin-top: 2rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}

@@ -1,0 +1,117 @@
+/* Profile Page Styles */
+
+body {
+    background: #fdf9f4;
+    font-family: 'Inter', sans-serif;
+    padding-top: 100px;
+}
+
+.brand {
+    font-family: 'Playfair Display', serif;
+    color: #635f40;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #555;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+}
+
+.sidebar a:hover {
+    background: rgba(99, 95, 64, 0.05);
+    color: #635f40;
+}
+
+.active-link {
+    background: #eae3bc !important;
+    color: #635f40 !important;
+    font-weight: 600;
+}
+
+.card-custom {
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+.status-badge {
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.profile-img-container {
+    position: relative;
+    width: 100px;
+    margin: 0 auto 20px;
+}
+
+.profile-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    background: #fcfcfc;
+}
+
+.form-control:focus {
+    border-color: #635f40;
+    box-shadow: 0 0 0 3px rgba(99, 95, 64, 0.1);
+    background: #fff;
+}
+
+.btn-dark-custom {
+    background: #1a1a1a;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-dark-custom:hover {
+    background: #000;
+    transform: translateY(-2px);
+}
+
+.table thead th {
+    border-bottom: 2px solid #f8f9fa;
+    color: #999;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-bottom: 15px;
+}
+
+.table tbody td {
+    padding: 20px 0;
+    color: #444;
+    border-bottom: 1px solid #f8f9fa;
+}

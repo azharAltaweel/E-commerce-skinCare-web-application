@@ -1,0 +1,106 @@
+:root {
+    --primary-custom: #635f40;
+    --bg-soft: #fdf9f4;
+}
+
+body {
+    background: var(--bg-soft);
+}
+
+.payment-container {
+    padding-top: 40px;
+    padding-bottom: 80px;
+}
+
+.summary-box {
+    position: sticky;
+    top: 100px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+}
+
+.step {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin: 0 auto 8px;
+}
+
+.active-step {
+    background: var(--primary-custom);
+    color: white;
+    box-shadow: 0 4px 10px rgba(99, 95, 64, 0.3);
+}
+
+.inactive-step {
+    border: 1px solid #ccc;
+    color: #777;
+    background: white;
+}
+
+.progress-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #666;
+}
+
+.payment-option {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #eee;
+    background: white;
+}
+
+.payment-option:hover {
+    border-color: var(--primary-custom);
+}
+
+.payment-option.selected {
+    border-color: var(--primary-custom);
+    background: #fcfcfc;
+}
+
+.form-label {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.form-control {
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+}
+
+.complete-btn {
+    background: #222;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.complete-btn:hover {
+    background: #000;
+    transform: translateY(-2px);
+}
+
+.brand-text {
+    font-family: 'Playfair Display', serif;
+}
+
+/* Stripe Element Styling */
+#card-element {
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background: white;
+}

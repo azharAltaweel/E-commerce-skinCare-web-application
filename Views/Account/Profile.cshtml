@@ -1,0 +1,149 @@
+@model E_commerce_Website__Skincare_.Models.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
+
+<!-- Content -->
+<div class="container">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-3 sidebar mb-4">
+            <div class="card-custom text-center mb-4">
+                <div class="profile-img-container">
+                    <img src="https://ui-avatars.com/api/?name=@(Model.FullName)&background=635f40&color=fff&size=100" class="rounded-circle profile-img" alt="Profile Avatar"/>
+                </div>
+                <h6 class="fw-bold mb-1">@Model.FullName</h6>
+                <p class="text-muted small mb-0">@Model.MemberSince</p>
+            </div>
+
+            <div class="card-custom p-2">
+                <a asp-action="Profile" class="active-link">
+                    <span class="material-symbols-outlined">person</span> Profile
+                </a>
+
+                <a href="#">
+                    <span class="material-symbols-outlined">shopping_cart</span> Orders
+                </a>
+
+                <a href="#">
+                    <span class="material-symbols-outlined">favorite</span> Wishlist
+                </a>
+
+                <a href="#">
+                    <span class="material-symbols-outlined">location_on</span> Address
+                </a>
+                
+                <hr class="my-2 opacity-5">
+                
+                <form asp-action="Logout" method="post" class="d-inline w-100">
+                    <button type="submit" class="nav-link text-danger border-0 bg-transparent w-100 text-start d-flex align-items-center gap-2 p-2 rounded-3 hover-bg-danger">
+                        <span class="material-symbols-outlined">logout</span> Sign Out
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show rounded-4 mb-4 border-0 shadow-sm" role="alert">
+                    <span class="material-symbols-outlined align-middle me-2">check_circle</span>
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Profile -->
+            <div class="card-custom mb-4">
+                <h4 class="fw-bold mb-1">Profile Information</h4>
+                <p class="text-muted mb-4">Keep your personal details up to date</p>
+
+                <form asp-action="Profile" method="post" class="row g-4">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                    
+                    <div class="col-md-6">
+                        <label asp-for="FullName" class="form-label">Full Name</label>
+                        <input asp-for="FullName" class="form-control" placeholder="Elena Vance">
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label">Email Address</label>
+                        <input asp-for="Email" class="form-control" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="+962 ...">
+                        <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-dark btn-dark-custom">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Orders -->
+            <div class="card-custom">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0">Order History</h4>
+                    <a href="#" class="btn btn-link text-decoration-none small" style="color: #635f40;">View All</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th class="text-end">Total</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (Model.OrderHistory != null && Model.OrderHistory.Any())
+                            {
+                                foreach (var order in Model.OrderHistory)
+                                {
+                                    <tr>
+                                        <td class="fw-bold">@order.Id</td>
+                                        <td>@order.Date.ToString("MMM dd, yyyy")</td>
+                                        <td>
+                                            <span class="status-badge @(order.Status == "Shipped" ? "bg-success-subtle text-success" : "bg-warning-subtle text-warning")">
+                                                @order.Status
+                                            </span>
+                                        </td>
+                                        <td class="text-end fw-bold">$@order.Total</td>
+                                        <td class="text-end">
+                                            <a href="#" class="btn btn-sm btn-outline-secondary rounded-3">View Details</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <span class="material-symbols-outlined d-block mb-2 fs-1">shopping_bag</span>
+                                        No orders found yet.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
