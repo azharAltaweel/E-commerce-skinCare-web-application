@@ -20,12 +20,21 @@ namespace E_commerce_Website__Skincare_.Controllers
                 .Include(p => p.Images)
                 .Include(p => p.Category)
                 .AsQueryable();//هاي عشان نعمل sorting and filtering قبل ما تكون ليست
-            // SEARCH
+                               // SEARCH
 
+            // SEARCH
             if (!string.IsNullOrEmpty(search))
             {
-                products = products
-                    .Where(p => p.Name.Contains(search));
+                search = search.Trim();
+
+                products = products.Where(p =>
+
+                    p.Name.Contains(search)
+
+                    ||
+
+                    p.Category.Name.Contains(search)
+                );
             }
 
             // FILTER
