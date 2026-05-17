@@ -102,5 +102,10 @@ namespace E_commerce_Website__Skincare_.Controllers
             var categories = await _context.Categories.ToListAsync();
             return View(categories);
         }
+
+        public async Task<IActionResult> OrderDetails()
+        {
+            return View();
+        }
     } 
 } 
