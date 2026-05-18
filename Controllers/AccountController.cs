@@ -38,7 +38,7 @@ namespace E_commerce_Website__Skincare_.Controllers
                 {
                     return Redirect(returnUrl);
                 }
-                return RedirectToAction("Profile");
+                return RedirectToAction("Index", "Home");
             }
             ViewData["ReturnUrl"] = returnUrl;
             return View(new LoginViewModel());
@@ -75,7 +75,7 @@ namespace E_commerce_Website__Skincare_.Controllers
                         {
                             return Redirect(returnUrl);
                         }
-                        return RedirectToAction("Profile");
+                        return RedirectToAction("Index", "Home");
                     }
                 }
                 ModelState.AddModelError("", "Invalid login attempt. Please check your credentials.");
@@ -97,7 +97,7 @@ namespace E_commerce_Website__Skincare_.Controllers
                 {
                     return Redirect(returnUrl);
                 }
-                return RedirectToAction("Profile");
+                return RedirectToAction("Index", "Home");
             }
             ViewData["ReturnUrl"] = returnUrl;
             return View(new RegisterViewModel());
@@ -142,7 +142,7 @@ namespace E_commerce_Website__Skincare_.Controllers
                 {
                     return Redirect(returnUrl);
                 }
-                return RedirectToAction("Profile");
+                return RedirectToAction("Index", "Home");
             }
             else
             {
