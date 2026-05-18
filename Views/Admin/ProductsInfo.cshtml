@@ -3,7 +3,7 @@
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
+<link href="~/css/filterProductsAdmin.css" rel="stylesheet"/>
 <div class="container-fluid p-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -24,7 +24,41 @@
         </button>
 
     </div>
+    @* Search + Sort Toolbar *@
+    <div class="toolbar d-flex justify-content-between align-items-center mb-3">
 
+        <div class="d-flex align-items-center gap-2 toolbar-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="text"
+                   id="searchInput"
+                   placeholder="Search products..."
+                   class="form-control"
+                   oninput="filterProducts()" />
+        </div>
+
+        <div class="d-flex align-items-center gap-2 toolbar-sort">
+
+            <label class="mb-0">Sort by</label>
+
+            <select id="sortSelect"
+                    class="form-select"
+                    onchange="filterProducts()">
+
+                <option value="id">ID</option>
+                <option value="name">Name A–Z</option>
+                <option value="price">Price</option>
+                <option value="stock">Stock</option>
+
+            </select>
+
+        </div>
+
+        <span class="count-pill" id="countPill">
+            @Model.Count() products
+        </span>
+
+    </div>
     <!-- PRODUCTS TABLE -->
 
     <div class="card border-0 shadow-sm">
@@ -36,6 +70,7 @@
                 <thead class="table-light">
 
                     <tr>
+                        <th>Id</th>
 
                         <th>Image</th>
                         <th>Product</th>
@@ -53,8 +88,11 @@
 
                     @foreach (var product in Model)
                     {
+                        
                         <tr>
-
+                            <td>
+                                @product.Id
+                            </td>
                             <td>
 
                                 @if (product.Images != null && product.Images.Any())
@@ -98,36 +136,25 @@
                                 @product.StockQuantity
                             </td>
                             <td class="d-flex gap-2 m-1">
-                                <!-- EDIT BUTTON -->
+                                <a asp-action="ProductDetails"
+                                   asp-route-id="@product.Id"
+                                   class="btn btn-dark btn-sm">
+
+                                    Details
+                                </a>
 
                                 <button class="btn btn-primary btn-sm"
                                         data-bs-toggle="modal"
                                         data-bs-target="#editProductModal-@product.Id">
-
                                     Edit
-
                                 </button>
 
-                                <!-- DELETE BUTTON -->
-                                <form asp-action="DeleteProduct"
-                                      method="post"
-                                      onsubmit="return confirm('Are you sure?')">
-
-                                    <input type="hidden"
-                                           name="id"
-                                           value="@product.Id" />
-
-                                    <button type="submit"
-                                            class="btn btn-danger btn-sm">
-
-                                        Delete
-
-                                    </button>
-
-                                </form>
-
+                                <button type="button"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="confirmDelete(@product.Id)">
+                                    Delete
+                                </button>
                             </td>
-
                         </tr>
 
                         <!-- EDIT MODAL  -->
@@ -517,3 +544,6 @@
     </div>
 
 </div>
+
+
+<script src="~/js/filterProductsAdmin.js"></script>

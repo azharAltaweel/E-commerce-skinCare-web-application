@@ -1,0 +1,193 @@
+﻿@model E_commerce_Website__Skincare_.Models.Product
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link href="~/css/filterProductsAdmin.css" rel="stylesheet" />
+
+<div class="container-fluid px-4 py-4 details-page">
+
+    <!-- TOP BAR -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                Product Details
+            </h2>
+
+            <p class="text-muted mb-0">
+                Manage skincare product information
+            </p>
+        </div>
+
+        <a asp-action="ProductsInfo"
+           class="btn btn-light border rounded-pill px-4">
+
+            ← Back
+
+        </a>
+
+    </div>
+
+    <div class="row g-4">
+
+        <!-- LEFT SIDE -->
+
+        <div class="col-lg-5">
+
+            <div class="product-gallery-card">
+
+                <!-- MAIN IMAGE -->
+
+                <div class="main-image-wrapper">
+
+                    <img id="mainImage"
+                         src="@Model.Images.FirstOrDefault()?.ImageUrl"
+                         class="main-product-image" />
+
+                </div>
+
+                <!-- THUMBNAILS -->
+
+                <div class="thumbnail-container">
+
+                    @foreach (var image in Model.Images)
+                    {
+                        <img src="@image.ImageUrl"
+                             class="thumbnail-image"
+                             onclick="changeMainImage('@image.ImageUrl')" />
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDE -->
+
+        <div class="col-lg-7">
+
+            <div class="product-info-card">
+
+                <!-- TITLE -->
+
+                <div class="d-flex justify-content-between align-items-start mb-3">
+
+                    <div>
+
+                        <span class="category-badge">
+                            @Model.Category?.Name
+                        </span>
+
+                        <h1 class="product-title mt-3">
+                            @Model.Name
+                        </h1>
+
+                    </div>
+
+                    @if (Model.Discount != null)
+                    {
+                        <span class="discount-badge">
+                            @Model.Discount.Percentage% OFF
+                        </span>
+                    }
+
+                </div>
+
+                <!-- PRICE -->
+
+                <div class="price-box mb-4">
+
+                    <span class="product-price">
+                        $@Model.Price
+                    </span>
+
+                </div>
+
+                <!-- STOCK -->
+
+                <div class="stock-box mb-4">
+
+                    <span class="stock-pill">
+                        @Model.StockQuantity In Stock
+                    </span>
+
+                </div>
+
+                <!-- DESCRIPTION -->
+
+                <div class="mb-5">
+
+                    <h5 class="section-title">
+                        Description
+                    </h5>
+
+                    <p class="description-text">
+                        @Model.Description
+                    </p>
+
+                </div>
+
+                <!-- REVIEWS -->
+
+                <div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <h5 class="section-title mb-0">
+                            Customer Reviews
+                        </h5>
+
+                        <span class="review-count">
+                            @Model.Reviews.Count Reviews
+                        </span>
+
+                    </div>
+
+                    @if (Model.Reviews.Any())
+                    {
+                        @foreach (var review in Model.Reviews.Take(4))
+                        {
+                            <div class="review-card">
+
+                                <div class="d-flex justify-content-between mb-2">
+
+                                    <strong>
+                                        @review.User?.FullName
+                                    </strong>
+
+                                    <span class="review-rating">
+                                        @review.Rating ★
+                                    </span>
+
+                                </div>
+
+                                <p class="mb-0 text-muted small">
+                                    @review.Comment
+                                </p>
+
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-review-box">
+
+                            No reviews yet
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="~/js/filterProductsAdmin.js"></script>

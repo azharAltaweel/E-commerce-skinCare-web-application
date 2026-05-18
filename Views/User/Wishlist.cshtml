@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    ViewData["Title"] = "Wishlist";
+}
+
+<link href="~/css/Wishlist.css"
+      rel="stylesheet" />
+
+<div class="container py-5">
+
+    <!-- Header -->
+    <div class="wishlist-header">
+
+        <div>
+
+            <span class="wishlist-subtitle">
+                YOUR COLLECTION
+            </span>
+
+            <h1 class="wishlist-title">
+                My Wishlist
+            </h1>
+
+        </div>
+
+        <div class="wishlist-count">
+
+            <span id="wishlist-count">
+                0 Saved Items
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- Wishlist Items -->
+    <div id="wishlist-container"
+         class="wishlist-wrapper">
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state"
+         class="empty-state d-none">
+
+        <i class="bi bi-heart"></i>
+
+        <h3>
+            Your wishlist is empty
+        </h3>
+
+        <p>
+            Save your favorite skincare products here.
+        </p>
+
+        <a asp-action="Products"
+           asp-controller="User"
+           class="btn-shop">
+
+            Continue Shopping
+
+        </a>
+
+    </div>
+
+</div>
+
+<script src="~/js/Wishlist.js"></script>

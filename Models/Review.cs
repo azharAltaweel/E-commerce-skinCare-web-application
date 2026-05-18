@@ -18,6 +18,8 @@ namespace E_commerce_Website__Skincare_.Models
 
         public bool IsApproved { get; set; } = false;
 
+        public DateTime CreatedAt { get; set; }
+    = DateTime.Now;
         public ApplicationUser User { get; set; }
         public Product Product { get; set; }
 

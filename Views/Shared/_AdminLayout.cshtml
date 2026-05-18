@@ -164,7 +164,7 @@
         </footer>
     </div>
 
-    </div>
+  
 
     @* <!-- ═══ PROFILE MODAL ═══ -->
     <div class="modal fade" id="profileModal" tabindex="-1">
@@ -188,25 +188,13 @@
     <script src="~/js/glowcare-alerts.js" asp-append-version="true"></script>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/admin-profile.js"></script>
-    
-    @if (TempData["Success"] != null || TempData["SuccessMessage"] != null || TempData["Error"] != null || TempData["ErrorMessage"] != null)
-    {
-        <script>
-            // Scripts are at bottom of <body> — DOM is already ready, no DOMContentLoaded needed
-            (function() {
-                var successMsg = '@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode((string)(TempData["Success"] ?? TempData["SuccessMessage"] ?? "")))';
-                var errorMsg = '@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode((string)(TempData["Error"] ?? TempData["ErrorMessage"] ?? "")))';
-                if (successMsg) {
-                    GlowAlert.success('Success!', successMsg);
-                } else if (errorMsg) {
-                    GlowAlert.error('Oops...', errorMsg);
-                }
-            })();
-        </script>
-    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/admin-profile.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
 
-    @await RenderSectionAsync("Scripts", required: false)
 
 </body>
 </html>
