@@ -356,6 +356,7 @@ namespace E_commerce_Website__Skincare_.Controllers
 
 
 
+
         // Action to  fetch info orders from db to show in view 
         public async Task<IActionResult> OrdersInfo()
         {
