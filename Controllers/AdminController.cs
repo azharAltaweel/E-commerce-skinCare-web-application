@@ -337,9 +337,9 @@ namespace E_commerce_Website__Skincare_.Controllers
 
 
 
-            TempData["Success"] = "Product has been updated successfully!";
-            return RedirectToAction("ProductsInfo");
-        }
+        //    TempData["Success"] = "Product has been updated successfully!";
+        //    return RedirectToAction("ProductsInfo");
+        //}
 
 
 
