@@ -26,19 +26,29 @@ namespace E_commerce_Website__Skincare_.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Profile");
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Dashboard", "Admin");
+                }
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+                return RedirectToAction("HomePage", "User");
             }
+            ViewData["ReturnUrl"] = returnUrl;
             return View(new LoginViewModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel loginVM)
+        public async Task<IActionResult> Login(LoginViewModel loginVM, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             if (!ModelState.IsValid) return View(loginVM);
 
             var user = await _userManager.FindByEmailAsync(loginVM.Email);
@@ -50,37 +60,61 @@ namespace E_commerce_Website__Skincare_.Controllers
                     var result = await _signInManager.PasswordSignInAsync(user, loginVM.Password, loginVM.RememberMe, false);
                     if (result.Succeeded)
                     {
-                        return RedirectToAction("Profile");
+                        // Merge guest session cart to database cart
+                        await MergeSessionCartToDbAsync(user.Id);
+
+                        var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+                        if (isAdmin)
+                        {
+                            TempData["Success"] = "Welcome back, Administrator!";
+                            return RedirectToAction("Dashboard", "Admin");
+                        }
+                        TempData["Success"] = "Welcome back, " + (user.FullName ?? user.UserName.Split('@')[0]) + "!";
+                        
+                        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                        {
+                            return Redirect(returnUrl);
+                        }
+                        return RedirectToAction("HomePage", "User");
                     }
                 }
                 ModelState.AddModelError("", "Invalid login attempt. Please check your credentials.");
+                TempData["Error"] = "Invalid login attempt. Please check your credentials.";
                 return View(loginVM);
             }
 
             ModelState.AddModelError("", "Invalid login attempt. Please check your credentials.");
+            TempData["Error"] = "Invalid login attempt. Please check your credentials.";
             return View(loginVM);
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult Register(string returnUrl = null)
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Profile");
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+                return RedirectToAction("HomePage", "User");
             }
+            ViewData["ReturnUrl"] = returnUrl;
             return View(new RegisterViewModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel registerVM)
+        public async Task<IActionResult> Register(RegisterViewModel registerVM, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             if (!ModelState.IsValid) return View(registerVM);
 
             var user = await _userManager.FindByEmailAsync(registerVM.Email);
             if (user != null)
             {
                 ModelState.AddModelError("", "This email address is already in use");
+                TempData["Error"] = "This email address is already in use.";
                 return View(registerVM);
             }
 
@@ -98,7 +132,17 @@ namespace E_commerce_Website__Skincare_.Controllers
             {
                 await _userManager.AddToRoleAsync(newUser, "User");
                 await _signInManager.SignInAsync(newUser, isPersistent: false);
-                return RedirectToAction("Profile");
+
+                // Merge guest session cart to database cart
+                await MergeSessionCartToDbAsync(newUser.Id);
+
+                TempData["Success"] = "Account created successfully! Welcome to GlowCare.";
+                
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+                return RedirectToAction("HomePage", "User");
             }
             else
             {
@@ -106,6 +150,7 @@ namespace E_commerce_Website__Skincare_.Controllers
                 {
                     ModelState.AddModelError("", error.Description);
                 }
+                TempData["Error"] = "Registration failed. Please check the requirements.";
                 return View(registerVM);
             }
         }
@@ -176,12 +221,43 @@ namespace E_commerce_Website__Skincare_.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            TempData["Success"] = "You have been signed out successfully. Come back soon!";
+            return RedirectToAction("HomePage", "User");
         }
 
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        private async Task MergeSessionCartToDbAsync(string userId)
+        {
+            var sessionItems = HttpContext.Session.GetObjectFromJson<List<SessionCartItem>>("SessionCart");
+            if (sessionItems != null && sessionItems.Any())
+            {
+                foreach (var sessionItem in sessionItems)
+                {
+                    var dbItem = await _context.CartItems
+                        .FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == sessionItem.ProductId);
+
+                    if (dbItem != null)
+                    {
+                        dbItem.Quantity += sessionItem.Quantity;
+                    }
+                    else
+                    {
+                        var newItem = new CartItem
+                        {
+                            UserId = userId,
+                            ProductId = sessionItem.ProductId,
+                            Quantity = sessionItem.Quantity
+                        };
+                        _context.CartItems.Add(newItem);
+                    }
+                }
+                await _context.SaveChangesAsync();
+                HttpContext.Session.Remove("SessionCart");
+            }
         }
     }
 }

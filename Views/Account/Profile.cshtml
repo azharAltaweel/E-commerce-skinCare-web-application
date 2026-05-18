@@ -21,6 +21,13 @@
             </div>
 
             <div class="card-custom p-2">
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Admin" asp-action="Dashboard" style="color: #635f40; font-weight: 600;">
+                        <span class="material-symbols-outlined">dashboard</span> Admin Dashboard
+                    </a>
+                }
+                
                 <a asp-action="Profile" class="active-link">
                     <span class="material-symbols-outlined">person</span> Profile
                 </a>
@@ -50,14 +57,6 @@
         <!-- Main Content -->
         <div class="col-md-9">
 
-            @if (TempData["Success"] != null)
-            {
-                <div class="alert alert-success alert-dismissible fade show rounded-4 mb-4 border-0 shadow-sm" role="alert">
-                    <span class="material-symbols-outlined align-middle me-2">check_circle</span>
-                    @TempData["Success"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            }
 
             <!-- Profile -->
             <div class="card-custom mb-4">

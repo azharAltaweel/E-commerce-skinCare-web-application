@@ -2,35 +2,21 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCheckoutSummary();
 });
 
-function loadCheckoutSummary() {
-    let cart = JSON.parse(localStorage.getItem('glowcare_cart')) || [];
-    const container = document.getElementById('checkout-items-list');
-    
-    // Seed some data if empty for testing checkout
-    if (cart.length === 0) {
-        cart = [
-            {
-                id: 101,
-                name: "Botanical Radiance Serum",
-                price: 84.00,
-                image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=400",
-                size: "30ml",
-                category: "Anti-Aging",
-                quantity: 1
-            },
-            {
-                id: 102,
-                name: "Cloud Hydration Cream",
-                price: 62.00,
-                image: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&q=80&w=400",
-                size: "50ml",
-                category: "Moisturizer",
-                quantity: 1
-            }
-        ];
-        localStorage.setItem('glowcare_cart', JSON.stringify(cart));
+async function loadCheckoutSummary() {
+    let cart = [];
+    try {
+        const response = await fetch('/Cart/GetCartItems');
+        if (response.ok) {
+            cart = await response.json();
+            localStorage.setItem('glowcare_cart', JSON.stringify(cart));
+            if (typeof updateCartBadge === 'function') updateCartBadge();
+        }
+    } catch (error) {
+        console.error('Error fetching dynamic checkout items from DB/Session:', error);
+        cart = JSON.parse(localStorage.getItem('glowcare_cart')) || [];
     }
 
+    const container = document.getElementById('checkout-items-list');
     if (!container) return;
     
     container.innerHTML = '';
@@ -84,11 +70,57 @@ function updateTotal() {
     if (totalEl) totalEl.innerText = `$${total.toFixed(2)}`;
 }
 
-function handleContinueToPayment() {
+async function handleContinueToPayment() {
     const form = document.getElementById('checkout-form');
-    if (form.checkValidity()) {
-        window.location.href = '/Cart/Payment';
-    } else {
+    if (!form.checkValidity()) {
         form.reportValidity();
+        return;
+    }
+
+    // Get input elements
+    const firstName = form.querySelector('input[placeholder="Elena"]').value.trim();
+    const lastName = form.querySelector('input[placeholder="Vance"]').value.trim();
+    const address = form.querySelector('input[placeholder="123 Street, Apt 4B"]').value.trim();
+    const city = form.querySelector('input[placeholder="New York"]').value.trim();
+    const postalCode = form.querySelector('input[placeholder="10001"]').value.trim();
+    const phone = form.querySelector('input[placeholder="+1 (555) 000-0000"]').value.trim();
+    const shippingMethod = form.querySelector('input[name="shippingMethod"]:checked').value;
+
+    const data = {
+        FirstName: firstName,
+        LastName: lastName,
+        Address: address,
+        City: city,
+        PostalCode: postalCode,
+        Phone: phone,
+        ShippingMethod: shippingMethod
+    };
+
+    try {
+        const response = await fetch('/Cart/SaveCheckoutInfo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            window.location.href = '/Cart/Payment';
+        } else {
+            console.error('Failed to save checkout info');
+            if (typeof GlowAlert !== 'undefined') {
+                GlowAlert.error('Checkout Error', 'Failed to save checkout information.');
+            } else {
+                alert('Failed to save checkout information.');
+            }
+        }
+    } catch (error) {
+        console.error('Error saving checkout info:', error);
+        if (typeof GlowAlert !== 'undefined') {
+            GlowAlert.error('Connection Error', 'Could not connect to the server.');
+        } else {
+            alert('Could not connect to the server.');
+        }
     }
 }

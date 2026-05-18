@@ -1,4 +1,4 @@
-﻿@*
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -57,7 +57,7 @@
 
                                 <p class="product-price">@product.Price.ToString("C")</p>
 
-                                <form asp-controller="Product" asp-action="AddToCart" method="post">
+                                <form asp-controller="User" asp-action="AddToCart" method="post">
                                     <input type="hidden" name="productId" value="@product.Id" />
                                     <input type="hidden" name="quantity" value="1" />
                                     <button type="submit" class="btn btn-link product-price p-0 border-0 bg-transparent text-decoration-none">
@@ -219,7 +219,7 @@
 
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                <form asp-controller="Home" asp-action="SubmitTestimonial" method="post">
+                <form asp-controller="User" asp-action="SubmitTestimonial" method="post">
                     @Html.AntiForgeryToken()
 
                     <div class="d-flex flex-column gap-3 align-items-center">

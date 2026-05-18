@@ -1,4 +1,4 @@
-﻿function openAddModal() {
+function openAddModal() {
     document.getElementById('modalTitle').innerText = "Add New Category";
     document.getElementById('modalSubtitle').innerText = "Fill in the details to create a new category.";
     document.getElementById('submitBtn').innerHTML = '<i class="fa-solid fa-check me-1"></i> Save Category';
@@ -38,11 +38,11 @@ function updatePreview(url) {
     }
 }
 
-    < !--Reusable logic file-- >
-    <script src="~/js/site-functions.js"></script>
+    // Reusable logic file
+    // site-functions.js
     
-    <!--Page specific logic(modals, etc.)-- >
-    <script src="~/js/admin/categories.js"></script>
+    // Page specific logic (modals, etc.)
+    // admin/categories.js
 
 function confirmDelete(id) {
     // Step 1: Admin Approval Message

@@ -1,4 +1,4 @@
-﻿using E_commerce_Website__Skincare_.Data;
+using E_commerce_Website__Skincare_.Data;
 using E_commerce_Website__Skincare_.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -286,9 +286,63 @@ namespace E_commerce_Website__Skincare_.Controllers
         {
             TempData["SuccessMessage"] =
                 "Item added to cart successfully!";
+        public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                TempData["Error"] = "Product not found.";
+                return RedirectToAction("HomePage");
+            }
+
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var existingItem = await _context.CartItems
+                    .FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId);
+
+                if (existingItem != null)
+                {
+                    existingItem.Quantity += quantity;
+                }
+                else
+                {
+                    var newItem = new CartItem
+                    {
+                        UserId = userId,
+                        ProductId = productId,
+                        Quantity = quantity
+                    };
+                    _context.CartItems.Add(newItem);
+                }
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                var sessionItems = HttpContext.Session.GetObjectFromJson<List<SessionCartItem>>("SessionCart") ?? new List<SessionCartItem>();
+                var existingItem = sessionItems.FirstOrDefault(si => si.ProductId == productId);
+
+                if (existingItem != null)
+                {
+                    existingItem.Quantity += quantity;
+                }
+                else
+                {
+                    sessionItems.Add(new SessionCartItem
+                    {
+                        ProductId = productId,
+                        Quantity = quantity
+                    });
+                }
+                HttpContext.Session.SetObjectAsJson("SessionCart", sessionItems);
+            }
+
+            TempData["SuccessMessage"] = "Item added to cart successfully!";
 
             return RedirectToAction(
                 nameof(HomePage));
+            // Redirect back to the page the user was on
+            return RedirectToAction("HomePage");
         }
 
 

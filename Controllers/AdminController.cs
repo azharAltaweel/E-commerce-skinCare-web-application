@@ -1,4 +1,4 @@
-ï»¿using E_commerce_Website__Skincare_.Data;
+using E_commerce_Website__Skincare_.Data;
 using E_commerce_Website__Skincare_.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -105,6 +105,13 @@ namespace E_commerce_Website__Skincare_.Controllers
                     "ProductsInfo");
             }
 
+                TempData["Success"] = "Product '" + product.Name + "' has been added successfully!";
+                return RedirectToAction("ProductsInfo");
+            
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+            TempData["Error"] = "Failed to add product. Please check your data.";
+            return RedirectToAction("ProductsInfo");
+        }
             ViewBag.Categories =
                 _context.Categories.ToList();
 
@@ -176,6 +183,8 @@ namespace E_commerce_Website__Skincare_.Controllers
 
                 await _context.SaveChangesAsync();
 
+            TempData["Success"] = "Product has been deleted successfully!";
+            return RedirectToAction("ProductsInfo");
                 return Json(new
                 {
                     success = true,
@@ -220,7 +229,7 @@ namespace E_commerce_Website__Skincare_.Controllers
             product.CategoryId =
                 updatedProduct.CategoryId;
 
-            // Ù…Ù‡Ù… Ø¬Ø¯Ø§Ù‹
+            // ãåã ÌÏÇð
             product.DiscountId =
                 updatedProduct.DiscountId;
 
@@ -336,6 +345,10 @@ namespace E_commerce_Website__Skincare_.Controllers
 
 
 
+
+            TempData["Success"] = "Product has been updated successfully!";
+            return RedirectToAction("ProductsInfo");
+        }
 
 
 
@@ -548,6 +561,7 @@ namespace E_commerce_Website__Skincare_.Controllers
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
+            TempData["Success"] = "Category '" + category.Name + "' has been added successfully!";
             return RedirectToAction("Categories");
         }
 
@@ -562,6 +576,7 @@ namespace E_commerce_Website__Skincare_.Controllers
 
             if (existingCategory == null)
             {
+                TempData["Error"] = "Category not found.";
                 return NotFound();
             }
 
@@ -600,6 +615,7 @@ namespace E_commerce_Website__Skincare_.Controllers
             
             await _context.SaveChangesAsync();
 
+            TempData["Success"] = "Category '" + category.Name + "' has been updated successfully!";
             return RedirectToAction("Categories");
         }
         // POST: /Admin/DeleteCategory
