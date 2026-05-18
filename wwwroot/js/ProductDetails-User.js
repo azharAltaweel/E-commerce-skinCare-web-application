@@ -333,67 +333,31 @@ function setRating(value) {
 // ================================
 // ADD TO CART
 // ================================
+async function addToCart(button) {
+    const productId = button.dataset.productId;
 
-function addToCart(button) {
+    try {
+        const token = document.querySelector(
+            'input[name="__RequestVerificationToken"]'
+        )?.value;
 
-    const product = {
+        const response = await fetch('/User/AddToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `productId=${productId}&quantity=${quantity}&__RequestVerificationToken=${token}`
+        });
 
-        id:
-            button.dataset.productId,
+        if (response.ok) {
+            alert("Product added to cart!");
+            updateCartCounter();
+        } else {
+            alert("Something went wrong.");
+        }
 
-        name:
-            button.dataset.productName,
-
-        price:
-            parseFloat(
-                button.dataset.productPrice
-            ),
-
-        image:
-            button.dataset.productImage,
-
-        quantity:
-            quantity
-    };
-
-    // Get cart
-    let cart =
-        JSON.parse(
-            localStorage.getItem(
-                "cart"
-            )
-        ) || [];
-
-    // Check exists
-    const existingProduct =
-        cart.find(
-            x => x.id === product.id
-        );
-
-    // Increase quantity
-    if (existingProduct) {
-
-        existingProduct.quantity +=
-            quantity;
+    } catch (error) {
+        console.error('Error:', error);
+        alert("Something went wrong.");
     }
-
-    // Add new product
-    else {
-
-        cart.push(product);
-    }
-
-    // Save
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-    );
-
-    // Update badge
-    updateCartCounter();
-
-    // Success alert
-    alert(
-        "Product added to cart!"
-    );
 }

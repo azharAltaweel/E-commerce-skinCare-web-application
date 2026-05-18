@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace E_commerce_Website__Skincare_.Models
 {
@@ -19,13 +21,13 @@ namespace E_commerce_Website__Skincare_.Models
         public int StockQuantity { get; set; }
         [Required]
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        [ValidateNever] public Category Category { get; set; }
 
         public int? DiscountId { get; set; }
 
-        public Discount? Discount { get; set; }
-        public virtual ICollection<ProductImage> Images { get; set; }
-        public virtual ICollection<Review> Reviews { get; set; }
+        [ValidateNever] public Discount? Discount { get; set; }
+        [ValidateNever] public virtual ICollection<ProductImage> Images { get; set; }
+        [ValidateNever] public virtual ICollection<Review> Reviews { get; set; }
 
     }
 }

@@ -204,20 +204,20 @@ async function proceedToCheckout() {
 }
 
 // Helper to add items to cart (for testing or from product pages)
-window.addToCart = async function(product) {
-    try {
-        const response = await fetch(`/Cart/AddToCart?productId=${product.id}&quantity=1`, {
-            method: 'POST'
-        });
-        if (response.ok) {
-            if (typeof updateCartBadge === 'function') updateCartBadge();
-            if (typeof GlowAlert !== 'undefined') {
-                GlowAlert.toast('Added ' + product.name + ' to cart!');
-            } else {
-                console.log('Added to cart:', product.name);
-            }
-        }
-    } catch (error) {
-        console.error('Error adding to cart:', error);
-    }
-};
+//window.addToCart = async function(product) {
+//    try {
+//        const response = await fetch(`/Cart/AddToCart?productId=${product.id}&quantity=1`, {
+//            method: 'POST'
+//        });
+//        if (response.ok) {
+//            if (typeof updateCartBadge === 'function') updateCartBadge();
+//            if (typeof GlowAlert !== 'undefined') {
+//                GlowAlert.toast('Added ' + product.name + ' to cart!');
+//            } else {
+//                console.log('Added to cart:', product.name);
+//            }
+//        }
+//    } catch (error) {
+//        console.error('Error adding to cart:', error);
+//    }
+//};
