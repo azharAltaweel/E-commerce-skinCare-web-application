@@ -6,46 +6,23 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadCart() {
-    let cart = JSON.parse(localStorage.getItem('glowcare_cart')) || [];
-    
-    // Seed some data if empty for testing
-    if (cart.length === 0) {
-        try {
-            const response = await fetch('/Cart/GetDefaultCartItems');
-            if (response.ok) {
-                cart = await response.json();
-                localStorage.setItem('glowcare_cart', JSON.stringify(cart));
-                if (typeof updateCartBadge === 'function') updateCartBadge();
-            } else {
-                throw new Error('Failed to fetch default products');
-            }
-        } catch (error) {
-            console.error('Error fetching dynamic cart items from DB:', error);
-            cart = [
-                {
-                    id: 101,
-                    name: "Botanical Radiance Serum",
-                    price: 84.00,
-                    image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=400",
-                    size: "30ml",
-                    category: "Anti-Aging",
-                    quantity: 1
-                },
-                {
-                    id: 102,
-                    name: "Cloud Hydration Cream",
-                    price: 62.00,
-                    image: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&q=80&w=400",
-                    size: "50ml",
-                    category: "Moisturizer",
-                    quantity: 1
-                }
-            ];
+    try {
+        const response = await fetch('/Cart/GetCartItems');
+        if (response.ok) {
+            const cart = await response.json();
+            // Sync with local storage for compatibility with other layout views
             localStorage.setItem('glowcare_cart', JSON.stringify(cart));
+            renderCart(cart);
+            if (typeof updateCartBadge === 'function') updateCartBadge();
+        } else {
+            throw new Error('Failed to fetch cart items from server');
         }
+    } catch (error) {
+        console.error('Error fetching dynamic cart items from DB/Session:', error);
+        // Fallback to local storage in case of server offline
+        const cart = JSON.parse(localStorage.getItem('glowcare_cart')) || [];
+        renderCart(cart);
     }
-
-    renderCart(cart);
 }
 
 function renderCart(cart) {
@@ -160,41 +137,53 @@ function applyPromoCode() {
     renderCart(cart);
 }
 
-function updateQty(productId, change) {
-    let cart = JSON.parse(localStorage.getItem('glowcare_cart')) || [];
-    const itemIndex = cart.findIndex(item => item.id === productId);
-
-    if (itemIndex > -1) {
-        cart[itemIndex].quantity += change;
-        if (cart[itemIndex].quantity < 1) {
-            removeItem(productId);
-            return;
+async function updateQty(productId, change) {
+    try {
+        const response = await fetch(`/Cart/UpdateQuantity?productId=${productId}&change=${change}`, {
+            method: 'POST'
+        });
+        if (response.ok) {
+            await loadCart();
         }
+    } catch (error) {
+        console.error('Error updating quantity:', error);
     }
-
-    localStorage.setItem('glowcare_cart', JSON.stringify(cart));
-    renderCart(cart);
-    if (typeof updateCartBadge === 'function') updateCartBadge();
 }
 
 function removeItem(productId) {
     if (typeof GlowAlert !== 'undefined') {
-        GlowAlert.confirm('Remove Item?', 'Are you sure you want to remove this item from your ritual?').then((result) => {
+        GlowAlert.confirm('Remove Item?', 'Are you sure you want to remove this item from your ritual?').then(async (result) => {
             if (result.isConfirmed) {
-                let cart = JSON.parse(localStorage.getItem('glowcare_cart')) || [];
-                cart = cart.filter(item => item.id !== productId);
-                localStorage.setItem('glowcare_cart', JSON.stringify(cart));
-                renderCart(cart);
-                if (typeof updateCartBadge === 'function') updateCartBadge();
-                GlowAlert.toast('Item removed from cart.');
+                try {
+                    const response = await fetch(`/Cart/RemoveFromCart?productId=${productId}`, {
+                        method: 'POST'
+                    });
+                    if (response.ok) {
+                        await loadCart();
+                        GlowAlert.toast('Item removed from cart.');
+                    }
+                } catch (error) {
+                    console.error('Error removing item:', error);
+                }
             }
         });
     } else {
-        let cart = JSON.parse(localStorage.getItem('glowcare_cart')) || [];
-        cart = cart.filter(item => item.id !== productId);
-        localStorage.setItem('glowcare_cart', JSON.stringify(cart));
-        renderCart(cart);
-        if (typeof updateCartBadge === 'function') updateCartBadge();
+        confirmRemoveItemLegacy(productId);
+    }
+}
+
+async function confirmRemoveItemLegacy(productId) {
+    if (confirm('Are you sure you want to remove this item from your ritual?')) {
+        try {
+            const response = await fetch(`/Cart/RemoveFromCart?productId=${productId}`, {
+                method: 'POST'
+            });
+            if (response.ok) {
+                await loadCart();
+            }
+        } catch (error) {
+            console.error('Error removing item:', error);
+        }
     }
 }
 
@@ -215,22 +204,20 @@ async function proceedToCheckout() {
 }
 
 // Helper to add items to cart (for testing or from product pages)
-window.addToCart = function(product) {
-    let cart = JSON.parse(localStorage.getItem('glowcare_cart')) || [];
-    const existingItem = cart.find(item => item.id === product.id);
-
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({ ...product, quantity: 1 });
-    }
-
-    localStorage.setItem('glowcare_cart', JSON.stringify(cart));
-    updateCartBadge();
-    
-    if (typeof GlowAlert !== 'undefined') {
-        GlowAlert.toast('Added ' + product.name + ' to cart!');
-    } else {
-        console.log('Added to cart:', product.name);
+window.addToCart = async function(product) {
+    try {
+        const response = await fetch(`/Cart/AddToCart?productId=${product.id}&quantity=1`, {
+            method: 'POST'
+        });
+        if (response.ok) {
+            if (typeof updateCartBadge === 'function') updateCartBadge();
+            if (typeof GlowAlert !== 'undefined') {
+                GlowAlert.toast('Added ' + product.name + ' to cart!');
+            } else {
+                console.log('Added to cart:', product.name);
+            }
+        }
+    } catch (error) {
+        console.error('Error adding to cart:', error);
     }
 };

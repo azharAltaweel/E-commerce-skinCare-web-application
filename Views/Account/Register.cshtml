@@ -177,7 +177,7 @@
             <!-- Tabs -->
             <ul class="nav nav-tabs mb-4">
                 <li class="nav-item">
-                    <a asp-action="Login" class="nav-link">Login</a>
+                    <a asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="nav-link">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active">Sign Up</a>
@@ -186,7 +186,7 @@
 
 
             <!-- Form -->
-            <form asp-action="Register" method="post">
+            <form asp-action="Register" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
 
                 <div class="mb-3">
@@ -224,7 +224,7 @@
 
             <p class="text-center mt-4 text-muted">
                 Already have an account?
-                <a asp-action="Login" class="fw-bold text-decoration-none" style="color: #635f40;">Log in</a>
+                <a asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="fw-bold text-decoration-none" style="color: #635f40;">Log in</a>
             </p>
 
         </div>
