@@ -396,11 +396,20 @@ body {
 
 /* gaps */
 .gap-section {
-    margin-bottom:2.5 rem;
+    margin-bottom: 5rem; /* مسافة أمان أسفل كل سكشن */
+    display: block; /* للتأكد من أن المتصفح يعامله كـ Block Element */
+    clear: both;
 }
-.gap-section:first-of-type {
-    margin-top: 1rem;
-}
+
+    /* إذا كان السكشن يحتوي على عنوان فقط والمحتوى فارغ، نضمن وجود مسافة تنفس */
+    .gap-section h2.section-heading {
+        margin-bottom: 2.5rem;
+        padding-top: 1rem;
+    }
+
+    .gap-section:last-of-type {
+        margin-bottom: 0;
+    }
 
 /* Keeps the cards uniformly sized with the button sitting perfectly at the bottom */
 .product-card {

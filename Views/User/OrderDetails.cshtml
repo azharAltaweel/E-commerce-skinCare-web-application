@@ -397,7 +397,7 @@
                     </div>
                     <div class="tracking-steps">
                         <div class="tracking-line"></div>
-                        <div class="tracking-line-fill" style="width: @(Model.Status == "Processing" ? "40%" : Model.Status == "Completed" ? "100%" : "0%")"></div>
+                        <div class="tracking-line-fill" style="width: @(Model.Status == "Processing" ? "50%" : Model.Status == "Delivered" ? "100%" : "0%")"></div>
 
                         <div class="tracking-step">
                             <div class="step-dot done">
@@ -406,28 +406,23 @@
                             <span class="step-label done-text">Confirmed</span>
                             <span class="step-date">May 12</span>
                         </div>
+
                         <div class="tracking-step">
-                            <div class="step-dot @(Model.Status == "Processing" || Model.Status == "Completed" ? "done" : "")">
+                            <div class="step-dot @(Model.Status == "Processing" || Model.Status == "Delivered" ? "done" : "")">
                                 <span class="material-symbols-outlined">data_exploration</span>
                             </div>
                             <span class="step-label">Processing</span>
                         </div>
-                        <div class="tracking-step">
-                            <div class="step-dot @(Model.Status == "Completed" ? "done" : "")">
-                                <span class="material-symbols-outlined">home</span>
-                            </div>
-                            <span class="step-label">Completed</span>
-                        </div>
-                        <div class="tracking-step">
-                            <div class="step-dot done">
-                                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400">check</span>
-                    </div>
-                            <span class="step-label done-text">Delivered</span>
-                            <span class="step-date">May 16</span>
-                </div>
-                    </div>
-                </div>
 
+                        <div class="tracking-step">
+                            <div class="step-dot @(Model.Status == "Delivered" ? "done" : "")">
+                                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400">check</span>
+                            </div>
+                            <span class="step-label">Delivered</span>
+                            <span class="step-date">May 16</span>
+                        </div>
+                    </div>
+                </div>
                 <!-- ORDER ITEMS -->
                 <div class="gc-card">
                     <div class="gc-card-title">
