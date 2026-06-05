@@ -63,10 +63,6 @@ function loadWishlist() {
 
     <div class="wishlist-actions">
 
-        <button type="submit" class="btn add-cart-btn">
-            Add To Cart
-        </button>
-
         <button class="btn-remove"
                 onclick="removeWishlist('${product.id}')">
 

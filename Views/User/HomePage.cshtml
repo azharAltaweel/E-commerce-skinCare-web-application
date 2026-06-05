@@ -41,7 +41,7 @@
                                     <img src="@(category.ImageUrl ?? "https://via.placeholder.com/150")" alt="@category.Name">
                                 </div>
                             </div>
-                            <span class="cat-name">@category.Name</span>
+                            <span class="cat-name" style="    font-size: 1rem">@category.Name</span>
                         </a>
                     </div>
                 }
@@ -81,14 +81,6 @@
                                 <p class="product-name">@product.Name</p>
                                 <p class="product-sub">@(product.Category?.Name ?? "General")</p>
                                 <p class="product-price">@product.Price.ToString("C")</p>
-
-                                <form asp-controller="User" asp-action="AddToCart" method="post">
-                                    <input type="hidden" name="productId" value="@product.Id" />
-                                    <input type="hidden" name="quantity" value="1" />
-                                    <button type="submit" class="btn btn-link product-price p-0 border-0 bg-transparent text-decoration-none">
-                                        Add to cart
-                                    </button>
-                                </form>
                             </div>
                         </div>
                     </div>
